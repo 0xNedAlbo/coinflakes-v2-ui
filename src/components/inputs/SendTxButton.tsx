@@ -1,6 +1,6 @@
 import { CheckOutlined, ErrorOutlined } from "@mui/icons-material";
 import { Button, CircularProgress } from "@mui/material";
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useEffect } from "react";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { Abi } from "viem";
 import EvmAddress from "@/utils/evmAddress";
@@ -13,10 +13,6 @@ export type SendTxButtonProps = {
     functionName: string;
     args?: any[];
     value?: bigint;
-};
-
-export type SendTxButtonRef = {
-    reset: () => void;
 };
 
 export function SendTxButton(
@@ -47,6 +43,8 @@ export function SendTxButton(
     function onButtonClick() {
         if (disabled) return;
         if (!address || !args) return;
+        if (isSuccess || isLoading || isError) return;
+
         sendTx({
             address,
             abi,
@@ -55,6 +53,10 @@ export function SendTxButton(
             args,
         });
     }
+
+    useEffect(() => {
+        if (isSuccess) setTimeout(() => resetTx?.(), 5000);
+    }, [isSuccess]);
 
     return (
         <Button

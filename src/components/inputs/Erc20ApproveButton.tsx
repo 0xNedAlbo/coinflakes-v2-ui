@@ -10,6 +10,7 @@ import {
 } from "wagmi";
 import { BN_ZERO } from "@/utils/constants";
 import EvmAddress from "@/utils/evmAddress";
+import { eventNames } from "process";
 
 export type Erc20ApproveButtonProps = {
     amountNeeded: bigint;
@@ -40,12 +41,13 @@ function Erc20ApproveButton({
     successLabel = successLabel || "Approved";
     const [allowance, setAllowance] = useState(0n);
 
-    const { data: initialAllowance } = useReadContract({
-        address: !!owner && !disabled ? token : undefined,
-        abi: erc20Abi,
-        functionName: "allowance",
-        args: [owner as EvmAddress, spender as EvmAddress],
-    });
+    const { data: initialAllowance, refetch: refetchAllowance } =
+        useReadContract({
+            address: token,
+            abi: erc20Abi,
+            functionName: "allowance",
+            args: [owner as EvmAddress, spender as EvmAddress],
+        });
 
     const {
         writeContract: sendTx,
@@ -88,19 +90,36 @@ function Erc20ApproveButton({
         },
     });
 
+    useWatchContractEvent({
+        address: token,
+        abi: erc20Abi,
+        eventName: "Transfer",
+        onLogs: (logs) => {
+            if (!owner) return;
+            logs.forEach((logEvent) => {
+                if (
+                    logEvent.args.from == owner &&
+                    logEvent.args.value !== undefined
+                )
+                    setAllowance(allowance - logEvent.args.value);
+            });
+        },
+    });
+
     useEffect(() => {
-        if (initialAllowance) setAllowance(initialAllowance);
+        if (initialAllowance !== undefined) setAllowance(initialAllowance);
     }, [initialAllowance]);
 
     useEffect(() => {
         onAllowanceChange?.(allowance);
+        resetTx?.();
     }, [allowance]);
 
     useEffect(() => {
         resetTx?.();
     }, [amountNeeded]);
 
-    if (amountNeeded > 0n && allowance >= amountNeeded)
+    if (isSuccess || (amountNeeded > 0n && allowance >= amountNeeded))
         return (
             <Button
                 variant="contained"

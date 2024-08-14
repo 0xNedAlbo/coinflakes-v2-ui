@@ -1,21 +1,15 @@
 import { Box, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
-import {
-    useAccount,
-    useBalance,
-    useReadContract,
-    useWatchContractEvent,
-} from "wagmi";
+import { useAccount, useReadContract, useWatchContractEvent } from "wagmi";
 import { BN_ZERO } from "@/utils/constants";
 import { numberFormat } from "@/utils/formats";
 import { useVault } from "@/hooks/useVault";
 import AssetAmountTextField from "@/components/inputs/AssetAmountTextField";
-import Erc20ApproveButton from "@/components/inputs/Erc20ApproveButton";
 import SendTxButton from "@/components/inputs/SendTxButton";
 import { useUnderlying } from "@/hooks/useUnderlying";
 import EvmAddress from "@/utils/evmAddress";
 import { erc20Abi, erc4626Abi } from "viem";
-import { vaultAbi } from "@/generated/wagmi";
+import { useReadVaultMaxWithdraw, vaultAbi } from "@/generated/wagmi";
 
 function WithdrawForm() {
     const [value, setValue] = useState(BN_ZERO);
@@ -25,10 +19,11 @@ function WithdrawForm() {
     const account = useAccount();
     const vault = useVault();
 
-    const { data: balance, refetch: refetchBalance } = useBalance({
-        address: account?.address,
-        token: underlying?.address,
-    });
+    const { data: maxWithdraw, refetch: refetchMaxWithdraw } =
+        // @ts-ignore
+        useReadVaultMaxWithdraw({
+            args: [account?.address as EvmAddress],
+        });
 
     const { data: onChainAllowance, refetch: refetchAllowance } =
         useReadContract({
@@ -54,7 +49,7 @@ function WithdrawForm() {
                     logEvent.args.from == account.address ||
                     logEvent.args.to == account.address
                 )
-                    refetchBalance();
+                    refetchMaxWithdraw();
             });
         },
     });
@@ -62,7 +57,7 @@ function WithdrawForm() {
     useWatchContractEvent({
         address: underlying?.address,
         abi: vaultAbi,
-        eventName: "Deposit",
+        eventName: "Withdraw",
         onLogs: (logs) => {
             if (!underlying?.address) return;
             if (!account?.address) return;
@@ -82,6 +77,8 @@ function WithdrawForm() {
         if (onChainAllowance) setAllowance(onChainAllowance as bigint);
     }, [onChainAllowance]);
 
+    useEffect(() => {});
+
     function onResetButtonClick() {
         refetchAllowance();
     }
@@ -99,55 +96,37 @@ function WithdrawForm() {
         <Box mt="1em" textAlign={"left"}>
             <Grid container spacing={1}>
                 <Grid item xs={12} mb={"1em"} mt={"-0.8em"}>
-                    Assets in Wallet:{" "}
-                    {numberFormat(balance?.value, underlying?.symbol)}
+                    Max. withdraw:{" "}
+                    {numberFormat(maxWithdraw, underlying?.symbol)}
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12} marginTop={"0.5em"}>
                     <AssetAmountTextField
-                        label="You pay"
+                        label="You withdraw"
                         symbol={underlying?.symbol || ""}
                         decimals={underlying?.decimals}
                         defaultValue={BN_ZERO}
-                        maxValue={balance?.value}
+                        maxValue={maxWithdraw}
                         onChange={onChangeInputValue}
                         disabled={false}
-                        textFieldId="deposit-input-field"
+                        textFieldId="withdraw-input-field"
                     ></AssetAmountTextField>
                 </Grid>
-                <Grid item xs={2} textAlign={"center"}></Grid>
-                <Grid
-                    item
-                    xs={4}
-                    marginTop={"0.5em"}
-                    textAlign={"center"}
-                ></Grid>
 
                 <Grid item xs={6}>
-                    <Erc20ApproveButton
-                        token={underlying?.address}
-                        amountNeeded={value}
-                        owner={account?.address}
-                        spender={vault?.address}
-                        disabled={
-                            balance?.value ? value > balance.value : false
-                        }
-                        onAllowanceChange={onAllowanceChange}
-                    ></Erc20ApproveButton>
+                    {" "}
                 </Grid>
                 <Grid item xs={6}>
                     {
                         <SendTxButton
                             disabled={
-                                value <= BN_ZERO ||
-                                value > (balance ? balance.value : 0n) ||
-                                (allowance as bigint) < value
+                                value <= BN_ZERO || value > (maxWithdraw ?? 0n)
                             }
                             address={vault?.address as EvmAddress}
-                            functionName="deposit"
-                            args={[value, account.address]}
+                            functionName="withdraw"
+                            args={[value, account.address, account.address]}
                             abi={erc4626Abi}
                         >
-                            <>Buy Shares</>
+                            <>Sell Shares</>
                         </SendTxButton>
                     }
                 </Grid>

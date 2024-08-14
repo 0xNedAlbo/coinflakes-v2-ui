@@ -17,9 +17,8 @@ export function getConfig() {
         }),
         ssr: true,
         transports: {
-            [mainnet.id]: http(),
-            [sepolia.id]: http(),
-            [localhost.id]: http(),
+            [mainnet.id]: http(process.env.NEXT_PUBLIC_RPC_ENDPOINT!),
+            [localhost.id]: http(process.env.NEXT_PUBLIC_RPC_ENDPOINT!),
         },
     });
 }

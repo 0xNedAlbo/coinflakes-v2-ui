@@ -104,7 +104,7 @@ function DepositForm() {
                     Assets in Wallet:{" "}
                     {numberFormat(balance?.value, underlying?.symbol)}
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12} marginTop={"0.5em"}>
                     <AssetAmountTextField
                         label="You pay"
                         symbol={underlying?.symbol || ""}
@@ -116,13 +116,6 @@ function DepositForm() {
                         textFieldId="deposit-input-field"
                     ></AssetAmountTextField>
                 </Grid>
-                <Grid item xs={2} textAlign={"center"}></Grid>
-                <Grid
-                    item
-                    xs={4}
-                    marginTop={"0.5em"}
-                    textAlign={"center"}
-                ></Grid>
 
                 <Grid item xs={6}>
                     <Erc20ApproveButton

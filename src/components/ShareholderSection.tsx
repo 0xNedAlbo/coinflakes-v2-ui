@@ -1,10 +1,11 @@
 import { Grid } from "@mui/material";
 
 import BuyShares from "./ShareholderSection/BuyShares";
+import SellShares from "./ShareholderSection/SellShares";
 
 function ShareholderSection() {
     return (
-        <Grid container mt={"4em"} mb={"12em"}>
+        <Grid container mt={"4em"} mb={"4em"}>
             <Grid item xs={2}></Grid>
             <Grid item xs={8}>
                 <Grid container spacing={2}>
@@ -12,7 +13,7 @@ function ShareholderSection() {
                         <BuyShares></BuyShares>
                     </Grid>
                     <Grid item xs={6}>
-                        {/*<SellShares></SellShares>*/}
+                        <SellShares></SellShares>
                     </Grid>
                 </Grid>
             </Grid>
