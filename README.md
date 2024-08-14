@@ -57,6 +57,34 @@ npm run dev
 
 This command starts a local development server on `http://localhost:3000`. The server will automatically reload if you make changes to the code.
 
+## Setup the test environment
+
+There are some useful tools to setup a development environment. 
+
+Use Chrome as a browser and create a user profile "Web3DebugProfile". 
+
+Install Metamask or Rabby and add an account with the privte key
+`0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`. This is the first test account with the local blockchain of Hardhat or Anvil. 
+
+There is a launch configuration for Visual Studio Code at `.vscode/launch.json` which starts a debug session in Chrome.
+
+Install foundry from https://getfoundry.sh.
+
+In the `tools` directory are some scripts to get started:
+
+The following command starts a mainnet fork with a block time of 5 seconds which simulates a EVM blockchain.
+
+```bash
+./source/startLocalhost.sh
+```
+
+This command adds some DAI to the test account to help testing the UI:
+
+```bash
+./source/fundAccount.sh
+```
+(The script uses a whale account to transfer DAI to the test account. Hopefully he/she does not run out of DAI any time soon...)
+
 ## Building for Production
 
 To build the project for production, run:
