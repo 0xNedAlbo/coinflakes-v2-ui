@@ -15,14 +15,13 @@ import SendTxButton from "@/components/inputs/SendTxButton";
 import { useUnderlying } from "@/hooks/useUnderlying";
 import EvmAddress from "@/utils/evmAddress";
 import { erc20Abi, erc4626Abi } from "viem";
-import { vaultAbi } from "@/generated/wagmi";
+import { daiAddress, vaultAbi, vaultAddress } from "@/generated/wagmi";
 import { isWriteSettled, TxState } from "@/utils/txState";
 import { RestartAltOutlined } from "@mui/icons-material";
 
 function DepositForm() {
     const [value, setValue] = useState(BN_ZERO);
     const [allowance, setAllowance] = useState(0n);
-    const [txState, setTxState] = useState<TxState>("idle");
 
     const underlying = useUnderlying();
     const account = useAccount();
@@ -64,25 +63,6 @@ function DepositForm() {
 
     useWatchContractEvent({
         address: underlying?.address,
-        abi: erc20Abi,
-        eventName: "Approval",
-        onLogs: (logs) => {
-            if (!underlying?.address) return;
-            if (!account?.address) return;
-            if (!vault?.address) return;
-            if (!logs.length) return;
-            logs.forEach((logEvent) => {
-                if (
-                    logEvent.args.spender == vault?.address ||
-                    logEvent.args.owner == account.address
-                )
-                    setAllowance(logEvent.args.value as bigint);
-            });
-        },
-    });
-
-    useWatchContractEvent({
-        address: underlying?.address,
         abi: vaultAbi,
         eventName: "Deposit",
         onLogs: (logs) => {
@@ -105,13 +85,16 @@ function DepositForm() {
     }, [onChainAllowance]);
 
     function onResetButtonClick() {
-        setTxState("idle");
         refetchAllowance();
     }
 
     const onChangeInputValue = (newValue: bigint | null) => {
         if (!newValue) setValue(BN_ZERO);
         else setValue(newValue);
+    };
+
+    const onAllowanceChange = (newAllowance: bigint) => {
+        setAllowance(newAllowance);
     };
 
     return (
@@ -141,18 +124,19 @@ function DepositForm() {
                     textAlign={"center"}
                 ></Grid>
 
-                <Grid item xs={isWriteSettled(txState) ? 5 : 6}>
+                <Grid item xs={6}>
                     <Erc20ApproveButton
-                        token={underlying?.address as EvmAddress}
-                        amountNeeded={value as bigint}
+                        token={underlying?.address}
+                        amountNeeded={value}
+                        owner={account?.address}
                         spender={vault?.address}
                         disabled={
-                            value == BN_ZERO ||
-                            (balance?.value ? value > balance.value : false)
+                            balance?.value ? value > balance.value : false
                         }
+                        onAllowanceChange={onAllowanceChange}
                     ></Erc20ApproveButton>
                 </Grid>
-                <Grid item xs={isWriteSettled(txState) ? 5 : 6}>
+                <Grid item xs={6}>
                     {
                         <SendTxButton
                             disabled={
@@ -164,12 +148,12 @@ function DepositForm() {
                             functionName="deposit"
                             args={[value, account.address]}
                             abi={erc4626Abi}
-                            onTxStateChange={setTxState}
                         >
                             <>Buy Shares</>
                         </SendTxButton>
                     }
                 </Grid>
+                {/*
                 <Grid
                     item
                     xs={isWriteSettled(txState) ? 2 : 0}
@@ -184,6 +168,7 @@ function DepositForm() {
                         <RestartAltOutlined />
                     </Button>
                 </Grid>
+                */}
             </Grid>
         </Box>
     );

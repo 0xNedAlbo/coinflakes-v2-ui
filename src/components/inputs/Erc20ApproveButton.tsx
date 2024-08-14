@@ -3,22 +3,23 @@ import { Button, CircularProgress } from "@mui/material";
 import { erc20Abi } from "viem";
 import { useCallback, useEffect, useState } from "react";
 import {
-    useAccount,
     useReadContract,
     useWaitForTransactionReceipt,
+    useWatchContractEvent,
     useWriteContract,
 } from "wagmi";
 import { BN_ZERO } from "@/utils/constants";
 import EvmAddress from "@/utils/evmAddress";
-import { isWriteSettled, TxState } from "@/utils/txState";
 
 export type Erc20ApproveButtonProps = {
     amountNeeded: bigint;
+    token?: EvmAddress;
+    owner?: EvmAddress;
+    spender?: EvmAddress;
     disabled?: boolean;
     label?: string;
     successLabel?: string;
-    token?: EvmAddress;
-    spender?: EvmAddress;
+    onAllowanceChange?: (newAllowance: bigint) => void;
 };
 
 export type Erc20ApproveButtonRef = {
@@ -28,26 +29,29 @@ export type Erc20ApproveButtonRef = {
 function Erc20ApproveButton({
     label,
     disabled,
-    amountNeeded,
     successLabel,
     token,
+    owner,
     spender,
+    amountNeeded,
+    onAllowanceChange,
 }: Erc20ApproveButtonProps) {
     label = label || "Approve";
     successLabel = successLabel || "Approved";
-    const [state, setState] = useState<TxState>("idle");
-    const [isDone, setIsDone] = useState<boolean>(false);
+    const [allowance, setAllowance] = useState(0n);
 
-    const { address: owner } = useAccount();
-
-    const { data: allowance } = useReadContract({
+    const { data: initialAllowance } = useReadContract({
         address: !!owner && !disabled ? token : undefined,
         abi: erc20Abi,
         functionName: "allowance",
         args: [owner as EvmAddress, spender as EvmAddress],
     });
 
-    const { writeContract: sendTx, data: txHash } = useWriteContract();
+    const {
+        writeContract: sendTx,
+        data: txHash,
+        reset: resetTx,
+    } = useWriteContract();
 
     const onButtonClick = useCallback(() => {
         sendTx({
@@ -58,28 +62,45 @@ function Erc20ApproveButton({
         });
     }, [token, erc20Abi, spender, amountNeeded]);
 
-    const { status: txState, error: txError } = useWaitForTransactionReceipt({
-        hash: txHash,
-        confirmations: 1,
+    const { isLoading, isSuccess, isPending, isError } =
+        useWaitForTransactionReceipt({
+            hash: txHash,
+            confirmations: 1,
+        });
+
+    useWatchContractEvent({
+        address: token,
+        abi: erc20Abi,
+        eventName: "Approval",
+        onLogs: (logs) => {
+            if (!token) return;
+            if (!owner) return;
+            if (!spender) return;
+            if (!logs.length) return;
+            logs.forEach((logEvent) => {
+                if (
+                    logEvent.args.spender == spender ||
+                    logEvent.args.owner == owner
+                )
+                    if (logEvent.args.value !== undefined)
+                        setAllowance(logEvent.args.value);
+            });
+        },
     });
 
     useEffect(() => {
-        if (!txHash) setState("idle");
-        else setState(txState == "pending" ? "loading" : txState);
-    }, [txState, txHash]);
+        if (initialAllowance) setAllowance(initialAllowance);
+    }, [initialAllowance]);
 
     useEffect(() => {
-        if (!allowance) setIsDone(false);
-        else if (!amountNeeded) setIsDone(false);
-        else if (allowance >= amountNeeded) setIsDone(true);
-        else setIsDone(isWriteSettled(state));
-    }, [state, allowance, amountNeeded]);
+        onAllowanceChange?.(allowance);
+    }, [allowance]);
 
     useEffect(() => {
-        if (txError) console.log(txError);
-    }, [txError]);
+        resetTx?.();
+    }, [amountNeeded]);
 
-    if (isDone || state === "success")
+    if (amountNeeded > 0n && allowance >= amountNeeded)
         return (
             <Button
                 variant="contained"
@@ -89,6 +110,7 @@ function Erc20ApproveButton({
                 disableRipple
                 startIcon={<CheckOutlined color="inherit" />}
                 sx={{ cursor: "default" }}
+                disabled={disabled || amountNeeded == 0n}
             >
                 {successLabel}
             </Button>
@@ -99,7 +121,7 @@ function Erc20ApproveButton({
                 {label}
             </Button>
         );
-    else if (state === "error")
+    else if (isError)
         return (
             <Button
                 variant="contained"
@@ -111,19 +133,7 @@ function Erc20ApproveButton({
                 {label}
             </Button>
         );
-    else if (state === "idle") {
-        return (
-            <Button
-                variant="contained"
-                color={"primary"}
-                disabled={disabled}
-                fullWidth
-                onClick={onButtonClick}
-            >
-                {label}
-            </Button>
-        );
-    } else if (state === "loading")
+    else if (isLoading)
         return (
             <Button
                 variant="contained"
@@ -136,7 +146,25 @@ function Erc20ApproveButton({
                 {label}
             </Button>
         );
-    else return <>Unknown state... {state}</>;
+    else if (isPending) {
+        return (
+            <Button
+                variant="contained"
+                color={"primary"}
+                disabled={disabled}
+                fullWidth
+                onClick={onButtonClick}
+            >
+                {label}
+            </Button>
+        );
+    } else
+        return (
+            <>
+                Unknown state...{" "}
+                {console.log({ isLoading, isPending, isSuccess, isError })}
+            </>
+        );
 }
 
 Erc20ApproveButton.displayName = "Erc20ApproveButton";
