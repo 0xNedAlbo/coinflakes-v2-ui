@@ -1,9 +1,10 @@
 import { CheckOutlined, ErrorOutlined } from "@mui/icons-material";
 import { Button, CircularProgress } from "@mui/material";
-import React, { ReactElement, useEffect } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { Abi } from "viem";
 import EvmAddress from "@/utils/evmAddress";
+import TransactionDialog from "../TransactionDialog";
 
 export type SendTxButtonProps = {
     disabled?: boolean;
@@ -44,7 +45,6 @@ export function SendTxButton(
         if (disabled) return;
         if (!address || !args) return;
         if (isSuccess || isLoading || isError) return;
-
         sendTx({
             address,
             abi,
@@ -59,31 +59,34 @@ export function SendTxButton(
     }, [isSuccess]);
 
     return (
-        <Button
-            variant="contained"
-            disabled={disabled}
-            color={isSuccess ? "success" : "primary"}
-            fullWidth
-            onClick={() => onButtonClick()}
-            disableElevation={!isLoading && !isPending}
-            disableRipple={!isLoading && !isPending}
-            startIcon={
-                isLoading ? (
-                    <CircularProgress size={16} color={"inherit"} />
-                ) : isSuccess ? (
-                    <CheckOutlined />
-                ) : isError ? (
-                    <ErrorOutlined />
-                ) : (
-                    (icon ?? <></>)
-                )
-            }
-            sx={{
-                cursor: !isLoading || !isPending ? "pointer" : "default",
-            }}
-        >
-            {children}
-        </Button>
+        <>
+            <Button
+                variant="contained"
+                disabled={disabled}
+                color={isSuccess ? "success" : "primary"}
+                fullWidth
+                onClick={() => onButtonClick()}
+                disableElevation={!isLoading && !isPending}
+                disableRipple={!isLoading && !isPending}
+                startIcon={
+                    isLoading ? (
+                        <CircularProgress size={16} color={"inherit"} />
+                    ) : isSuccess ? (
+                        <CheckOutlined />
+                    ) : isError ? (
+                        <ErrorOutlined />
+                    ) : (
+                        (icon ?? <></>)
+                    )
+                }
+                sx={{
+                    cursor: !isLoading || !isPending ? "pointer" : "default",
+                }}
+            >
+                {children}
+            </Button>
+            <TransactionDialog txHash={txHash}></TransactionDialog>
+        </>
     );
 }
 

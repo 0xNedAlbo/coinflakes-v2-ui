@@ -13,7 +13,6 @@ import { useReadVaultMaxWithdraw, vaultAbi } from "@/generated/wagmi";
 
 function WithdrawForm() {
     const [value, setValue] = useState(BN_ZERO);
-    const [allowance, setAllowance] = useState(0n);
 
     const underlying = useUnderlying();
     const account = useAccount();
@@ -73,12 +72,6 @@ function WithdrawForm() {
         },
     });
 
-    useEffect(() => {
-        if (onChainAllowance) setAllowance(onChainAllowance as bigint);
-    }, [onChainAllowance]);
-
-    useEffect(() => {});
-
     function onResetButtonClick() {
         refetchAllowance();
     }
@@ -86,10 +79,6 @@ function WithdrawForm() {
     const onChangeInputValue = (newValue: bigint | null) => {
         if (!newValue) setValue(BN_ZERO);
         else setValue(newValue);
-    };
-
-    const onAllowanceChange = (newAllowance: bigint) => {
-        setAllowance(newAllowance);
     };
 
     return (

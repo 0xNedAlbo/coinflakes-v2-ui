@@ -11,6 +11,7 @@ import {
 import { BN_ZERO } from "@/utils/constants";
 import EvmAddress from "@/utils/evmAddress";
 import { eventNames } from "process";
+import TransactionDialog from "../TransactionDialog";
 
 export type Erc20ApproveButtonProps = {
     amountNeeded: bigint;
@@ -154,16 +155,19 @@ function Erc20ApproveButton({
         );
     else if (isLoading)
         return (
-            <Button
-                variant="contained"
-                color={"primary"}
-                fullWidth
-                disableElevation
-                startIcon={<CircularProgress size={16} color={"inherit"} />}
-                sx={{ cursor: "default" }}
-            >
-                {label}
-            </Button>
+            <>
+                <Button
+                    variant="contained"
+                    color={"primary"}
+                    fullWidth
+                    disableElevation
+                    startIcon={<CircularProgress size={16} color={"inherit"} />}
+                    sx={{ cursor: "default" }}
+                >
+                    {label}
+                </Button>
+                <TransactionDialog txHash={txHash}></TransactionDialog>
+            </>
         );
     else if (isPending) {
         return (
