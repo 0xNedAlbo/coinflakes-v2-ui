@@ -1,4 +1,4 @@
-import { Box, Button, Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
     useAccount,
@@ -15,9 +15,7 @@ import SendTxButton from "@/components/inputs/SendTxButton";
 import { useUnderlying } from "@/hooks/useUnderlying";
 import EvmAddress from "@/utils/evmAddress";
 import { erc20Abi, erc4626Abi } from "viem";
-import { daiAddress, vaultAbi, vaultAddress } from "@/generated/wagmi";
-import { isWriteSettled, TxState } from "@/utils/txState";
-import { RestartAltOutlined } from "@mui/icons-material";
+import { vaultAbi } from "@/generated/wagmi";
 
 function DepositForm() {
     const [value, setValue] = useState(BN_ZERO);
@@ -112,7 +110,7 @@ function DepositForm() {
                         defaultValue={BN_ZERO}
                         maxValue={balance?.value}
                         onChange={onChangeInputValue}
-                        disabled={false}
+                        disabled={!account || !account.isConnected}
                         textFieldId="deposit-input-field"
                     ></AssetAmountTextField>
                 </Grid>

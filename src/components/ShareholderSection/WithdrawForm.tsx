@@ -1,5 +1,5 @@
 import { Box, Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAccount, useReadContract, useWatchContractEvent } from "wagmi";
 import { BN_ZERO } from "@/utils/constants";
 import { numberFormat } from "@/utils/formats";
@@ -96,7 +96,7 @@ function WithdrawForm() {
                         defaultValue={BN_ZERO}
                         maxValue={maxWithdraw}
                         onChange={onChangeInputValue}
-                        disabled={false}
+                        disabled={!account || !account.isConnected}
                         textFieldId="withdraw-input-field"
                     ></AssetAmountTextField>
                 </Grid>
