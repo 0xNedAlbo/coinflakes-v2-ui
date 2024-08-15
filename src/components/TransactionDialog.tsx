@@ -115,7 +115,7 @@ export default function TransactionDialog(
                                 href={
                                     ((chain?.blockExplorers?.default
                                         .url as string) +
-                                        "/" +
+                                        "/tx/" +
                                         txHash) as string
                                 }
                             >
