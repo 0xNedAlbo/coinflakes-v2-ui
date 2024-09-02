@@ -1,19 +1,30 @@
-//import { AccountBalanceOutlined, LinkOutlined } from "@mui/icons-material";
 import { useVault } from "@/hooks/useVault";
-import { Button, ButtonGroup, Grid, Link, Typography } from "@mui/material";
+import { Grid, IconButton, Typography } from "@mui/material";
 import { ConnectKitButton } from "connectkit";
-//import { useVault } from "../hooks/useVault";
-//import { useNetwork } from "wagmi";
+import { useContext } from "react";
+import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
+import { ColorModeContext } from "./ColorModeContext";
 
 export default function MainAppBar() {
     const vault = useVault();
-    //  const { chain } = useNetwork();
-
+    const { mode, toggleColorMode } = useContext(ColorModeContext);
+    function changeColorMode() {
+        toggleColorMode();
+    }
     return (
         <Grid container mt={"1em"}>
             <Grid item xs={2}></Grid>
-            <Grid item xs={6}>
+            <Grid item xs={5}>
                 <Typography variant="h4">{vault?.name}</Typography>
+            </Grid>
+            <Grid item xs={1} textAlign={"right"}>
+                <IconButton onClick={changeColorMode}>
+                    {mode == "dark" ? (
+                        <LightModeOutlined></LightModeOutlined>
+                    ) : (
+                        <DarkModeOutlined></DarkModeOutlined>
+                    )}
+                </IconButton>
             </Grid>
             <Grid item xs={2} textAlign="right">
                 <ConnectKitButton></ConnectKitButton>
