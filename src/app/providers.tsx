@@ -17,7 +17,7 @@ export function Providers(props: {
     initialState?: State;
 }) {
     const [cookies, setCookie] = useCookies();
-    const [mode, setMode] = useState<PaletteMode>();
+    const [mode, setMode] = useState<PaletteMode>("light");
     const [config] = useState(() => getConfig());
     const [queryClient] = useState(() => new QueryClient());
 
@@ -43,7 +43,6 @@ export function Providers(props: {
         [mode]
     );
 
-    if (!mode) return <></>;
     return (
         <ColorModeContext.Provider value={{ mode, toggleColorMode }}>
             <ThemeProvider theme={theme}>
