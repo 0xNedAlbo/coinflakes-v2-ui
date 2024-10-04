@@ -3,6 +3,7 @@ import { react } from "@wagmi/cli/plugins";
 import vaultAbi from "@/abis/vault.abi.json";
 import migrationAbi from "@/abis/migration.abi.json";
 import v1VaultAbi from "@/abis/v1Vault.abi.json";
+import managedVaultAbi from "@/abis/managedVault.abi.json";
 
 import { Abi, erc20Abi } from "viem";
 
@@ -28,6 +29,10 @@ export default defineConfig({
             address: "0x430fD367dBbaebDAe682060e0fd2b2B1583E0639",
             name: "OldVault",
             abi: v1VaultAbi as Abi,
+        },
+        {
+            name: "ManagedVault",
+            abi: managedVaultAbi as Abi,
         },
     ],
     plugins: [react()],

@@ -111,6 +111,616 @@ export const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F' as const
 export const daiConfig = { address: daiAddress, abi: daiAbi } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ManagedVault
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const managedVaultAbi = [
+  {
+    type: 'function',
+    inputs: [{ name: 'address_', internalType: 'address', type: 'address' }],
+    name: 'addShareholder',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'owner', internalType: 'address', type: 'address' },
+      { name: 'spender', internalType: 'address', type: 'address' },
+    ],
+    name: 'allowance',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'spender', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'approve',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'asset',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'assetsInUse',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'balanceOf',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'shares', internalType: 'uint256', type: 'uint256' }],
+    name: 'convertToAssets',
+    outputs: [{ name: 'assets', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'assets', internalType: 'uint256', type: 'uint256' }],
+    name: 'convertToShares',
+    outputs: [{ name: 'shares', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'decimals',
+    outputs: [{ name: '', internalType: 'uint8', type: 'uint8' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'spender', internalType: 'address', type: 'address' },
+      { name: 'subtractedValue', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'decreaseAllowance',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'assets', internalType: 'uint256', type: 'uint256' },
+      { name: 'receiver', internalType: 'address', type: 'address' },
+    ],
+    name: 'deposit',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'amount_', internalType: 'uint256', type: 'uint256' }],
+    name: 'fees',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'amount_', internalType: 'uint256', type: 'uint256' }],
+    name: 'gains',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'spender', internalType: 'address', type: 'address' },
+      { name: 'addedValue', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'increaseAllowance',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'manager_', internalType: 'address', type: 'address' },
+      { name: 'asset_', internalType: 'address', type: 'address' },
+      { name: 'name_', internalType: 'string', type: 'string' },
+      { name: 'symbol_', internalType: 'string', type: 'string' },
+    ],
+    name: 'initialize',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'address_', internalType: 'address', type: 'address' }],
+    name: 'isShareholder',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: '', internalType: 'address', type: 'address' }],
+    name: 'keepers',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'amount_', internalType: 'uint256', type: 'uint256' }],
+    name: 'loss',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'manager',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: '', internalType: 'address', type: 'address' }],
+    name: 'maxDeposit',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: '', internalType: 'address', type: 'address' }],
+    name: 'maxMint',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'owner_', internalType: 'address', type: 'address' }],
+    name: 'maxRedeem',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'address_', internalType: 'address', type: 'address' }],
+    name: 'maxWithdraw',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'shares', internalType: 'uint256', type: 'uint256' },
+      { name: 'receiver', internalType: 'address', type: 'address' },
+    ],
+    name: 'mint',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'name',
+    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'assets', internalType: 'uint256', type: 'uint256' }],
+    name: 'previewDeposit',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'shares', internalType: 'uint256', type: 'uint256' }],
+    name: 'previewMint',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'shares', internalType: 'uint256', type: 'uint256' }],
+    name: 'previewRedeem',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'assets', internalType: 'uint256', type: 'uint256' }],
+    name: 'previewWithdraw',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'shares', internalType: 'uint256', type: 'uint256' },
+      { name: 'receiver', internalType: 'address', type: 'address' },
+      { name: 'owner', internalType: 'address', type: 'address' },
+    ],
+    name: 'redeem',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'address_', internalType: 'address', type: 'address' }],
+    name: 'removeShareholder',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'sender_', internalType: 'address', type: 'address' },
+      { name: 'amount_', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'returnAssets',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'amount_', internalType: 'uint256', type: 'uint256' }],
+    name: 'setAssetsInUse',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'newManager_', internalType: 'address', type: 'address' }],
+    name: 'setManager',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'amount_', internalType: 'uint256', type: 'uint256' }],
+    name: 'setTotalAssets',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: '', internalType: 'address', type: 'address' }],
+    name: 'shareholders',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'symbol',
+    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'totalAssets',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'totalSupply',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'to', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'transfer',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'from', internalType: 'address', type: 'address' },
+      { name: 'to', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'transferFrom',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'receiver_', internalType: 'address', type: 'address' },
+      { name: 'amount_', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'useAssets',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'assets', internalType: 'uint256', type: 'uint256' },
+      { name: 'receiver', internalType: 'address', type: 'address' },
+      { name: 'owner', internalType: 'address', type: 'address' },
+    ],
+    name: 'withdraw',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'newKeeper',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'AddKeeper',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'newShareholder',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'AddShareholder',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'owner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'spender',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'value',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'Approval',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'newManager',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'ChangeManager',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'sender',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'owner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'assets',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'shares',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'Deposit',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'Fees',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'Gains',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'version', internalType: 'uint8', type: 'uint8', indexed: false },
+    ],
+    name: 'Initialized',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'Loss',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'removedKeeper',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'RemoveKeeper',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'removedShareholder',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'RemoveShareholder',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'sender',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'ReturnAssets',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'from', internalType: 'address', type: 'address', indexed: true },
+      { name: 'to', internalType: 'address', type: 'address', indexed: true },
+      {
+        name: 'value',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'Transfer',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'receiver',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'UseAssets',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'sender',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'receiver',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'owner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'assets',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'shares',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'Withdraw',
+  },
+] as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Migration
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1900,6 +2510,713 @@ export const useWatchDaiTransferEvent =
     abi: daiAbi,
     address: daiAddress,
     eventName: 'Transfer',
+  })
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__
+ */
+export const useReadManagedVault = /*#__PURE__*/ createUseReadContract({
+  abi: managedVaultAbi,
+})
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"allowance"`
+ */
+export const useReadManagedVaultAllowance = /*#__PURE__*/ createUseReadContract(
+  { abi: managedVaultAbi, functionName: 'allowance' },
+)
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"asset"`
+ */
+export const useReadManagedVaultAsset = /*#__PURE__*/ createUseReadContract({
+  abi: managedVaultAbi,
+  functionName: 'asset',
+})
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"assetsInUse"`
+ */
+export const useReadManagedVaultAssetsInUse =
+  /*#__PURE__*/ createUseReadContract({
+    abi: managedVaultAbi,
+    functionName: 'assetsInUse',
+  })
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"balanceOf"`
+ */
+export const useReadManagedVaultBalanceOf = /*#__PURE__*/ createUseReadContract(
+  { abi: managedVaultAbi, functionName: 'balanceOf' },
+)
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"convertToAssets"`
+ */
+export const useReadManagedVaultConvertToAssets =
+  /*#__PURE__*/ createUseReadContract({
+    abi: managedVaultAbi,
+    functionName: 'convertToAssets',
+  })
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"convertToShares"`
+ */
+export const useReadManagedVaultConvertToShares =
+  /*#__PURE__*/ createUseReadContract({
+    abi: managedVaultAbi,
+    functionName: 'convertToShares',
+  })
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"decimals"`
+ */
+export const useReadManagedVaultDecimals = /*#__PURE__*/ createUseReadContract({
+  abi: managedVaultAbi,
+  functionName: 'decimals',
+})
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"isShareholder"`
+ */
+export const useReadManagedVaultIsShareholder =
+  /*#__PURE__*/ createUseReadContract({
+    abi: managedVaultAbi,
+    functionName: 'isShareholder',
+  })
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"keepers"`
+ */
+export const useReadManagedVaultKeepers = /*#__PURE__*/ createUseReadContract({
+  abi: managedVaultAbi,
+  functionName: 'keepers',
+})
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"manager"`
+ */
+export const useReadManagedVaultManager = /*#__PURE__*/ createUseReadContract({
+  abi: managedVaultAbi,
+  functionName: 'manager',
+})
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"maxDeposit"`
+ */
+export const useReadManagedVaultMaxDeposit =
+  /*#__PURE__*/ createUseReadContract({
+    abi: managedVaultAbi,
+    functionName: 'maxDeposit',
+  })
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"maxMint"`
+ */
+export const useReadManagedVaultMaxMint = /*#__PURE__*/ createUseReadContract({
+  abi: managedVaultAbi,
+  functionName: 'maxMint',
+})
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"maxRedeem"`
+ */
+export const useReadManagedVaultMaxRedeem = /*#__PURE__*/ createUseReadContract(
+  { abi: managedVaultAbi, functionName: 'maxRedeem' },
+)
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"maxWithdraw"`
+ */
+export const useReadManagedVaultMaxWithdraw =
+  /*#__PURE__*/ createUseReadContract({
+    abi: managedVaultAbi,
+    functionName: 'maxWithdraw',
+  })
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"name"`
+ */
+export const useReadManagedVaultName = /*#__PURE__*/ createUseReadContract({
+  abi: managedVaultAbi,
+  functionName: 'name',
+})
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"previewDeposit"`
+ */
+export const useReadManagedVaultPreviewDeposit =
+  /*#__PURE__*/ createUseReadContract({
+    abi: managedVaultAbi,
+    functionName: 'previewDeposit',
+  })
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"previewMint"`
+ */
+export const useReadManagedVaultPreviewMint =
+  /*#__PURE__*/ createUseReadContract({
+    abi: managedVaultAbi,
+    functionName: 'previewMint',
+  })
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"previewRedeem"`
+ */
+export const useReadManagedVaultPreviewRedeem =
+  /*#__PURE__*/ createUseReadContract({
+    abi: managedVaultAbi,
+    functionName: 'previewRedeem',
+  })
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"previewWithdraw"`
+ */
+export const useReadManagedVaultPreviewWithdraw =
+  /*#__PURE__*/ createUseReadContract({
+    abi: managedVaultAbi,
+    functionName: 'previewWithdraw',
+  })
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"shareholders"`
+ */
+export const useReadManagedVaultShareholders =
+  /*#__PURE__*/ createUseReadContract({
+    abi: managedVaultAbi,
+    functionName: 'shareholders',
+  })
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"symbol"`
+ */
+export const useReadManagedVaultSymbol = /*#__PURE__*/ createUseReadContract({
+  abi: managedVaultAbi,
+  functionName: 'symbol',
+})
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"totalAssets"`
+ */
+export const useReadManagedVaultTotalAssets =
+  /*#__PURE__*/ createUseReadContract({
+    abi: managedVaultAbi,
+    functionName: 'totalAssets',
+  })
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"totalSupply"`
+ */
+export const useReadManagedVaultTotalSupply =
+  /*#__PURE__*/ createUseReadContract({
+    abi: managedVaultAbi,
+    functionName: 'totalSupply',
+  })
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__
+ */
+export const useWriteManagedVault = /*#__PURE__*/ createUseWriteContract({
+  abi: managedVaultAbi,
+})
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"addShareholder"`
+ */
+export const useWriteManagedVaultAddShareholder =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: managedVaultAbi,
+    functionName: 'addShareholder',
+  })
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"approve"`
+ */
+export const useWriteManagedVaultApprove = /*#__PURE__*/ createUseWriteContract(
+  { abi: managedVaultAbi, functionName: 'approve' },
+)
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"decreaseAllowance"`
+ */
+export const useWriteManagedVaultDecreaseAllowance =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: managedVaultAbi,
+    functionName: 'decreaseAllowance',
+  })
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"deposit"`
+ */
+export const useWriteManagedVaultDeposit = /*#__PURE__*/ createUseWriteContract(
+  { abi: managedVaultAbi, functionName: 'deposit' },
+)
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"fees"`
+ */
+export const useWriteManagedVaultFees = /*#__PURE__*/ createUseWriteContract({
+  abi: managedVaultAbi,
+  functionName: 'fees',
+})
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"gains"`
+ */
+export const useWriteManagedVaultGains = /*#__PURE__*/ createUseWriteContract({
+  abi: managedVaultAbi,
+  functionName: 'gains',
+})
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"increaseAllowance"`
+ */
+export const useWriteManagedVaultIncreaseAllowance =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: managedVaultAbi,
+    functionName: 'increaseAllowance',
+  })
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"initialize"`
+ */
+export const useWriteManagedVaultInitialize =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: managedVaultAbi,
+    functionName: 'initialize',
+  })
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"loss"`
+ */
+export const useWriteManagedVaultLoss = /*#__PURE__*/ createUseWriteContract({
+  abi: managedVaultAbi,
+  functionName: 'loss',
+})
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"mint"`
+ */
+export const useWriteManagedVaultMint = /*#__PURE__*/ createUseWriteContract({
+  abi: managedVaultAbi,
+  functionName: 'mint',
+})
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"redeem"`
+ */
+export const useWriteManagedVaultRedeem = /*#__PURE__*/ createUseWriteContract({
+  abi: managedVaultAbi,
+  functionName: 'redeem',
+})
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"removeShareholder"`
+ */
+export const useWriteManagedVaultRemoveShareholder =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: managedVaultAbi,
+    functionName: 'removeShareholder',
+  })
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"returnAssets"`
+ */
+export const useWriteManagedVaultReturnAssets =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: managedVaultAbi,
+    functionName: 'returnAssets',
+  })
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"setAssetsInUse"`
+ */
+export const useWriteManagedVaultSetAssetsInUse =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: managedVaultAbi,
+    functionName: 'setAssetsInUse',
+  })
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"setManager"`
+ */
+export const useWriteManagedVaultSetManager =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: managedVaultAbi,
+    functionName: 'setManager',
+  })
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"setTotalAssets"`
+ */
+export const useWriteManagedVaultSetTotalAssets =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: managedVaultAbi,
+    functionName: 'setTotalAssets',
+  })
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"transfer"`
+ */
+export const useWriteManagedVaultTransfer =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: managedVaultAbi,
+    functionName: 'transfer',
+  })
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"transferFrom"`
+ */
+export const useWriteManagedVaultTransferFrom =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: managedVaultAbi,
+    functionName: 'transferFrom',
+  })
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"useAssets"`
+ */
+export const useWriteManagedVaultUseAssets =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: managedVaultAbi,
+    functionName: 'useAssets',
+  })
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"withdraw"`
+ */
+export const useWriteManagedVaultWithdraw =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: managedVaultAbi,
+    functionName: 'withdraw',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__
+ */
+export const useSimulateManagedVault = /*#__PURE__*/ createUseSimulateContract({
+  abi: managedVaultAbi,
+})
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"addShareholder"`
+ */
+export const useSimulateManagedVaultAddShareholder =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'addShareholder',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"approve"`
+ */
+export const useSimulateManagedVaultApprove =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'approve',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"decreaseAllowance"`
+ */
+export const useSimulateManagedVaultDecreaseAllowance =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'decreaseAllowance',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"deposit"`
+ */
+export const useSimulateManagedVaultDeposit =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'deposit',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"fees"`
+ */
+export const useSimulateManagedVaultFees =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'fees',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"gains"`
+ */
+export const useSimulateManagedVaultGains =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'gains',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"increaseAllowance"`
+ */
+export const useSimulateManagedVaultIncreaseAllowance =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'increaseAllowance',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"initialize"`
+ */
+export const useSimulateManagedVaultInitialize =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'initialize',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"loss"`
+ */
+export const useSimulateManagedVaultLoss =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'loss',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"mint"`
+ */
+export const useSimulateManagedVaultMint =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'mint',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"redeem"`
+ */
+export const useSimulateManagedVaultRedeem =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'redeem',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"removeShareholder"`
+ */
+export const useSimulateManagedVaultRemoveShareholder =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'removeShareholder',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"returnAssets"`
+ */
+export const useSimulateManagedVaultReturnAssets =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'returnAssets',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"setAssetsInUse"`
+ */
+export const useSimulateManagedVaultSetAssetsInUse =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'setAssetsInUse',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"setManager"`
+ */
+export const useSimulateManagedVaultSetManager =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'setManager',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"setTotalAssets"`
+ */
+export const useSimulateManagedVaultSetTotalAssets =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'setTotalAssets',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"transfer"`
+ */
+export const useSimulateManagedVaultTransfer =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'transfer',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"transferFrom"`
+ */
+export const useSimulateManagedVaultTransferFrom =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'transferFrom',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"useAssets"`
+ */
+export const useSimulateManagedVaultUseAssets =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'useAssets',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"withdraw"`
+ */
+export const useSimulateManagedVaultWithdraw =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: managedVaultAbi,
+    functionName: 'withdraw',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link managedVaultAbi}__
+ */
+export const useWatchManagedVaultEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({ abi: managedVaultAbi })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link managedVaultAbi}__ and `eventName` set to `"AddKeeper"`
+ */
+export const useWatchManagedVaultAddKeeperEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: managedVaultAbi,
+    eventName: 'AddKeeper',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link managedVaultAbi}__ and `eventName` set to `"AddShareholder"`
+ */
+export const useWatchManagedVaultAddShareholderEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: managedVaultAbi,
+    eventName: 'AddShareholder',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link managedVaultAbi}__ and `eventName` set to `"Approval"`
+ */
+export const useWatchManagedVaultApprovalEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: managedVaultAbi,
+    eventName: 'Approval',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link managedVaultAbi}__ and `eventName` set to `"ChangeManager"`
+ */
+export const useWatchManagedVaultChangeManagerEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: managedVaultAbi,
+    eventName: 'ChangeManager',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link managedVaultAbi}__ and `eventName` set to `"Deposit"`
+ */
+export const useWatchManagedVaultDepositEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: managedVaultAbi,
+    eventName: 'Deposit',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link managedVaultAbi}__ and `eventName` set to `"Fees"`
+ */
+export const useWatchManagedVaultFeesEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: managedVaultAbi,
+    eventName: 'Fees',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link managedVaultAbi}__ and `eventName` set to `"Gains"`
+ */
+export const useWatchManagedVaultGainsEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: managedVaultAbi,
+    eventName: 'Gains',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link managedVaultAbi}__ and `eventName` set to `"Initialized"`
+ */
+export const useWatchManagedVaultInitializedEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: managedVaultAbi,
+    eventName: 'Initialized',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link managedVaultAbi}__ and `eventName` set to `"Loss"`
+ */
+export const useWatchManagedVaultLossEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: managedVaultAbi,
+    eventName: 'Loss',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link managedVaultAbi}__ and `eventName` set to `"RemoveKeeper"`
+ */
+export const useWatchManagedVaultRemoveKeeperEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: managedVaultAbi,
+    eventName: 'RemoveKeeper',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link managedVaultAbi}__ and `eventName` set to `"RemoveShareholder"`
+ */
+export const useWatchManagedVaultRemoveShareholderEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: managedVaultAbi,
+    eventName: 'RemoveShareholder',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link managedVaultAbi}__ and `eventName` set to `"ReturnAssets"`
+ */
+export const useWatchManagedVaultReturnAssetsEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: managedVaultAbi,
+    eventName: 'ReturnAssets',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link managedVaultAbi}__ and `eventName` set to `"Transfer"`
+ */
+export const useWatchManagedVaultTransferEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: managedVaultAbi,
+    eventName: 'Transfer',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link managedVaultAbi}__ and `eventName` set to `"UseAssets"`
+ */
+export const useWatchManagedVaultUseAssetsEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: managedVaultAbi,
+    eventName: 'UseAssets',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link managedVaultAbi}__ and `eventName` set to `"Withdraw"`
+ */
+export const useWatchManagedVaultWithdrawEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: managedVaultAbi,
+    eventName: 'Withdraw',
   })
 
 /**
