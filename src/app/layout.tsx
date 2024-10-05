@@ -14,8 +14,8 @@ const robotoFont = Roboto({
 });
 
 export const metadata: Metadata = {
-    title: "Coinflakes Vault v2",
-    description: "Coinflakes Investment Vault",
+    title: "Coinflakes Managed Vault",
+    description: "Coinflakes Managed Investment Vault",
     icons: [
         { rel: "icon", url: "/favicon.ico" },
         {

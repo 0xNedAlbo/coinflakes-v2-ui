@@ -1,6 +1,7 @@
 "use client";
 
 import MainAppBar from "@/components/managed-vault/MainAppBar";
+import { ManagedVaultContext } from "@/hooks/useManagedVault";
 import EvmAddress from "@/utils/evmAddress";
 import { CssBaseline } from "@mui/material";
 
@@ -11,8 +12,10 @@ type RouteParams = {
 function App({ params }: { params: { address: EvmAddress } }) {
     return (
         <>
-            <CssBaseline />
-            <MainAppBar vaultAddress={params.address}></MainAppBar>
+            <ManagedVaultContext.Provider value={params.address}>
+                <CssBaseline />
+                <MainAppBar></MainAppBar>
+            </ManagedVaultContext.Provider>
         </>
     );
 }

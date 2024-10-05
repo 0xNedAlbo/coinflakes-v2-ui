@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 import EvmAddress from "../utils/evmAddress";
 
@@ -9,36 +9,36 @@ import {
     useReadManagedVaultSymbol,
     useReadManagedVaultTotalAssets,
     useReadManagedVaultTotalSupply,
-    useReadVaultDecimals,
-    useReadVaultName,
-    useReadVaultPricePerShare,
-    useReadVaultSymbol,
-    useReadVaultTotalAssets,
-    vaultAddress,
 } from "@/generated/wagmi";
+import { isAddress } from "viem";
 
-export type UseManagedVaultParams = {
-    address: EvmAddress;
+export const ManagedVaultContext = createContext<EvmAddress | undefined>(
+    undefined
+);
+
+export type ManagedVaultType = {
+    address?: EvmAddress;
+    name?: string;
+    symbol?: string;
+    decimals?: number;
+    totalAssets?: bigint;
+    totalSupply?: bigint;
+    assetsInUse?: bigint;
 };
 
-export type UseManagedVaultReturnType =
-    | {
-          address: EvmAddress;
-          name: string;
-          symbol: string;
-          decimals: number;
-          totalAssets: bigint;
-          totalSupply: bigint;
-          assetsInUse: bigint;
-      }
-    | undefined;
+export function useManagedVault(): ManagedVaultType {
+    const address = useContext(ManagedVaultContext);
 
-export function useManagedVault(
-    params: UseManagedVaultParams
-): UseManagedVaultReturnType {
-    const address = params.address;
+    if (!address) {
+        throw new Error(
+            "useManageVault must be used within ManagedVaultContext"
+        );
+    }
+    if (!isAddress(address as string)) {
+        throw new Error("vault address is not an EVM address");
+    }
 
-    const [vault, setVault] = useState<UseManagedVaultReturnType>();
+    const [vault, setVault] = useState<ManagedVaultType>({});
 
     const { data: name } = useReadManagedVaultName({ address });
     const { data: symbol } = useReadManagedVaultSymbol({ address });
@@ -55,7 +55,6 @@ export function useManagedVault(
         if (totalAssets === undefined) return;
         if (totalSupply === undefined) return;
         if (assetsInUse === undefined) return;
-        console.log("TEST");
         setVault({
             address,
             name,

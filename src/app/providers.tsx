@@ -7,7 +7,7 @@ import { ConnectKitProvider } from "connectkit";
 
 import { getConfig } from "@/wagmi";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { PaletteLinearProgress, PaletteMode } from "@mui/material";
+import { PaletteMode } from "@mui/material";
 import { ColorModeContext } from "@/components/ColorModeContext";
 
 import { useCookies } from "react-cookie";

@@ -3,21 +3,16 @@ import { ConnectKitButton } from "connectkit";
 import { useContext } from "react";
 import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
 import { ColorModeContext } from "../ColorModeContext";
-import EvmAddress from "@/utils/evmAddress";
 import { useManagedVault } from "@/hooks/useManagedVault";
 
-export type MainAppBarParams = {
-    vaultAddress: EvmAddress;
-};
-
-export default function MainAppBar(params: MainAppBarParams) {
-    const vault = useManagedVault({ address: params.vaultAddress });
+export default function MainAppBar() {
+    const vault = useManagedVault();
     const { mode, toggleColorMode } = useContext(ColorModeContext);
     function changeColorMode() {
         toggleColorMode();
     }
     return (
-        <Grid container mt={"1em"}>
+        <Grid container mt={"1em"} marginTop={"3em"}>
             <Grid item xs={2}></Grid>
             <Grid item xs={5}>
                 <Typography variant="h4">{vault?.name}</Typography>
