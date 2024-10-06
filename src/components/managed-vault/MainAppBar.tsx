@@ -3,7 +3,7 @@ import { ConnectKitButton } from "connectkit";
 import { useContext } from "react";
 import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
 import { ColorModeContext } from "../ColorModeContext";
-import { useManagedVault } from "@/hooks/useManagedVault";
+import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 
 export default function MainAppBar() {
     const vault = useManagedVault();

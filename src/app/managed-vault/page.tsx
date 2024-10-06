@@ -1,14 +1,11 @@
 "use client";
 
-import MainAppBar from "@/components/managed-vault/MainAppBar";
-import EvmAddress from "@/utils/evmAddress";
 import { CssBaseline } from "@mui/material";
 
-function App({ params }: { params: { address: EvmAddress } }) {
+function App() {
     return (
         <>
             <CssBaseline />
-            <MainAppBar vaultAddress={params.address}></MainAppBar>
         </>
     );
 }

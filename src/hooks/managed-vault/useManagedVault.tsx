@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import EvmAddress from "../utils/evmAddress";
+import EvmAddress from "@/utils/evmAddress";
 
 import {
     useReadManagedVaultAssetsInUse,
@@ -9,6 +9,13 @@ import {
     useReadManagedVaultSymbol,
     useReadManagedVaultTotalAssets,
     useReadManagedVaultTotalSupply,
+    useWatchManagedVaultDepositEvent,
+    useWatchManagedVaultFeesEvent,
+    useWatchManagedVaultGainsEvent,
+    useWatchManagedVaultLossEvent,
+    useWatchManagedVaultReturnAssetsEvent,
+    useWatchManagedVaultUseAssetsEvent,
+    useWatchManagedVaultWithdrawEvent,
 } from "@/generated/wagmi";
 import { isAddress } from "viem";
 
@@ -43,9 +50,66 @@ export function useManagedVault(): ManagedVaultType {
     const { data: name } = useReadManagedVaultName({ address });
     const { data: symbol } = useReadManagedVaultSymbol({ address });
     const { data: decimals } = useReadManagedVaultDecimals({ address });
-    const { data: totalAssets } = useReadManagedVaultTotalAssets({ address });
-    const { data: assetsInUse } = useReadManagedVaultAssetsInUse({ address });
-    const { data: totalSupply } = useReadManagedVaultTotalSupply({ address });
+    const { data: totalAssets, refetch: refetchTotalAssets } =
+        useReadManagedVaultTotalAssets({ address });
+    const { data: assetsInUse, refetch: refetchAssetsInUse } =
+        useReadManagedVaultAssetsInUse({ address });
+    const { data: totalSupply, refetch: refetchTotalSupply } =
+        useReadManagedVaultTotalSupply({ address });
+
+    useWatchManagedVaultDepositEvent({
+        address,
+        onLogs: () => {
+            refetchTotalAssets();
+            refetchTotalSupply();
+        },
+    });
+
+    useWatchManagedVaultWithdrawEvent({
+        address,
+        onLogs: () => {
+            refetchTotalAssets();
+            refetchTotalSupply();
+        },
+    });
+
+    useWatchManagedVaultUseAssetsEvent({
+        address,
+        onLogs: () => {
+            refetchAssetsInUse();
+        },
+    });
+
+    useWatchManagedVaultReturnAssetsEvent({
+        address,
+        onLogs: () => {
+            refetchAssetsInUse();
+        },
+    });
+
+    useWatchManagedVaultGainsEvent({
+        address,
+        onLogs: () => {
+            refetchAssetsInUse();
+            refetchTotalAssets();
+        },
+    });
+
+    useWatchManagedVaultLossEvent({
+        address,
+        onLogs: () => {
+            refetchAssetsInUse();
+            refetchTotalAssets();
+        },
+    });
+
+    useWatchManagedVaultFeesEvent({
+        address,
+        onLogs: () => {
+            refetchAssetsInUse();
+            refetchTotalAssets();
+        },
+    });
 
     useEffect(() => {
         if (!address) return;
