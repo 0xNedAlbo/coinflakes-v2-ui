@@ -4,6 +4,7 @@ import EvmAddress from "@/utils/evmAddress";
 
 import {
     useReadManagedVaultAssetsInUse,
+    useReadManagedVaultConvertToAssets,
     useReadManagedVaultDecimals,
     useReadManagedVaultName,
     useReadManagedVaultSymbol,
@@ -18,6 +19,7 @@ import {
     useWatchManagedVaultWithdrawEvent,
 } from "@/generated/wagmi";
 import { isAddress } from "viem";
+import { BN_1E } from "@/utils/constants";
 
 export const ManagedVaultContext = createContext<EvmAddress | undefined>(
     undefined
@@ -31,6 +33,7 @@ export type ManagedVaultType = {
     totalAssets?: bigint;
     totalSupply?: bigint;
     assetsInUse?: bigint;
+    sharePrice?: bigint;
 };
 
 export function useManagedVault(): ManagedVaultType {
@@ -57,6 +60,12 @@ export function useManagedVault(): ManagedVaultType {
     const { data: totalSupply, refetch: refetchTotalSupply } =
         useReadManagedVaultTotalSupply({ address });
 
+    const { data: sharePrice, refetch: refetchSharePrice } =
+        useReadManagedVaultConvertToAssets({
+            address: vault.address,
+            args: [BN_1E(vault.decimals || 18)],
+        });
+
     useWatchManagedVaultDepositEvent({
         address,
         onLogs: () => {
@@ -77,6 +86,7 @@ export function useManagedVault(): ManagedVaultType {
         address,
         onLogs: () => {
             refetchAssetsInUse();
+            refetchTotalAssets();
         },
     });
 
@@ -84,6 +94,8 @@ export function useManagedVault(): ManagedVaultType {
         address,
         onLogs: () => {
             refetchAssetsInUse();
+            refetchTotalAssets();
+            refetchSharePrice();
         },
     });
 
@@ -92,6 +104,7 @@ export function useManagedVault(): ManagedVaultType {
         onLogs: () => {
             refetchAssetsInUse();
             refetchTotalAssets();
+            refetchSharePrice();
         },
     });
 
@@ -100,6 +113,7 @@ export function useManagedVault(): ManagedVaultType {
         onLogs: () => {
             refetchAssetsInUse();
             refetchTotalAssets();
+            refetchSharePrice();
         },
     });
 
@@ -108,17 +122,11 @@ export function useManagedVault(): ManagedVaultType {
         onLogs: () => {
             refetchAssetsInUse();
             refetchTotalAssets();
+            refetchSharePrice();
         },
     });
 
     useEffect(() => {
-        if (!address) return;
-        if (!name) return;
-        if (!symbol) return;
-        if (!decimals) return;
-        if (totalAssets === undefined) return;
-        if (totalSupply === undefined) return;
-        if (assetsInUse === undefined) return;
         setVault({
             address,
             name,
@@ -127,6 +135,7 @@ export function useManagedVault(): ManagedVaultType {
             totalAssets,
             totalSupply,
             assetsInUse,
+            sharePrice,
         });
     }, [
         address,
@@ -136,6 +145,7 @@ export function useManagedVault(): ManagedVaultType {
         totalAssets,
         totalSupply,
         assetsInUse,
+        sharePrice,
     ]);
 
     return vault;
