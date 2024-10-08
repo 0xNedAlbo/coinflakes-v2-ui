@@ -1,4 +1,4 @@
-import { Grid, IconButton, Typography } from "@mui/material";
+import { ButtonGroup, Grid, IconButton, Typography } from "@mui/material";
 import { ConnectKitButton } from "connectkit";
 import { useContext } from "react";
 import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
@@ -16,12 +16,15 @@ export default function MainAppBar() {
     return (
         <Grid container mt={"1em"} marginTop={"3em"}>
             <Grid item xs={2}></Grid>
-            <Grid item xs={5}>
+            <Grid item xs={4}>
                 <Typography variant="h4">{vault?.name}</Typography>
             </Grid>
-            <Grid item xs={1} textAlign={"right"}>
+            <Grid item xs={2} textAlign={"right"}>
                 <SwitchChainMenu></SwitchChainMenu>
-                <IconButton onClick={changeColorMode}>
+                <IconButton
+                    onClick={changeColorMode}
+                    style={{ marginLeft: "0.2em", marginRight: "0.2em" }}
+                >
                     {mode == "dark" ? (
                         <LightModeOutlined></LightModeOutlined>
                     ) : (

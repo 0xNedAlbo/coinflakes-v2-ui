@@ -14,7 +14,7 @@ export type ManagerType = {
 };
 
 export function useManager(): ManagerType {
-    const { address: vaultAddress, sharePrice } = useManagedVault();
+    const { address: vaultAddress } = useManagedVault();
     const { address: underlyingAddress } = useUnderlying();
     const { address: account } = useAccount();
     const [manager, setManager] = useState<ManagerType>({});
@@ -26,7 +26,7 @@ export function useManager(): ManagerType {
     const { data: balance, refetch: refetchBalance } = useReadContract({
         address: underlyingAddress,
         functionName: "balanceOf",
-        args: [manager as EvmAddress],
+        args: [managerAddress as EvmAddress],
         abi: erc20Abi,
     });
 
@@ -67,12 +67,13 @@ export function useManager(): ManagerType {
                     refetchWithdrawable();
             });
         },
-        abi: managedVaultAbi,
+        abi: erc20Abi,
     });
 
     useEffect(() => {
         if (!account) setManager({});
         else if (balance === undefined) setManager({});
+        else if (withdrawableAssets === undefined) setManager({});
         else {
             setManager({
                 address: managerAddress,

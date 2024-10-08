@@ -37,9 +37,11 @@ export default function SwitchChainMenu() {
     return (
         <>
             <Button
-                variant="outlined"
                 onClick={handleMenuOpen}
                 style={{ whiteSpace: "nowrap" }}
+                variant="text"
+                color="inherit"
+                disableElevation
             >
                 {currentChain?.name}
             </Button>
