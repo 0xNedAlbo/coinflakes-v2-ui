@@ -6,6 +6,7 @@ import {
     useReadManagedVaultConvertToShares,
 } from "@/generated/wagmi";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
+import { useShareholder } from "@/hooks/managed-vault/useShareholder";
 import { useUnderlying } from "@/hooks/managed-vault/useUnderlying";
 import EvmAddress from "@/utils/evmAddress";
 import { numberFormat } from "@/utils/formats";
@@ -13,34 +14,27 @@ import { SwapHorizOutlined } from "@mui/icons-material";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { erc20Abi } from "viem";
-import {
-    useAccount,
-    useBalance,
-    useReadContract,
-    useWatchContractEvent,
-} from "wagmi";
+import { useReadContract } from "wagmi";
 
 export type DepositFormProps = {};
 
 function DepositForm({}: DepositFormProps) {
-    const vault = useManagedVault();
-    const underlying = useUnderlying();
+    const { address: vaultAddress, symbol: vaultSymbol } = useManagedVault();
+    const { address: underlyingAddress, symbol, decimals } = useUnderlying();
+    const { address: account, underlyingBalance: balance } = useShareholder();
 
     const [value, setValue] = useState<bigint>(0n);
-    const [balance, setBalance] = useState<bigint>(0n);
     const [allowance, setAllowance] = useState<bigint>(0n);
 
-    const { address: account } = useAccount();
-
     const { data: allowanceData } = useReadContract({
-        address: underlying?.address,
+        address: underlyingAddress,
         functionName: "allowance",
-        args: [account as EvmAddress, vault?.address as EvmAddress],
+        args: [account as EvmAddress, vaultAddress as EvmAddress],
         abi: erc20Abi,
     });
 
     const { data: mintValue } = useReadManagedVaultConvertToShares({
-        address: vault.address,
+        address: vaultAddress,
         args: [value],
     });
 
@@ -48,31 +42,6 @@ function DepositForm({}: DepositFormProps) {
         if (!allowanceData) setAllowance(0n);
         else setAllowance(allowanceData as bigint);
     }, [allowanceData]);
-
-    const { data: balanceData, refetch: refetchBalance } = useBalance({
-        address: account,
-        token: underlying?.address,
-    });
-
-    useEffect(() => {
-        if (!balanceData) setBalance(0n);
-        else setBalance(balanceData.value);
-    }, [balanceData]);
-
-    useWatchContractEvent({
-        address: underlying?.address,
-        eventName: "Transfer",
-        onLogs: (logs) => {
-            logs.forEach((logEvent) => {
-                const { from, to } = logEvent.args as {
-                    from: EvmAddress;
-                    to: EvmAddress;
-                };
-                if (from === account || to === account) refetchBalance();
-            });
-        },
-        abi: erc20Abi,
-    });
 
     const onChangeInputValue = useCallback(
         (newValue: bigint | null) => {
@@ -92,18 +61,13 @@ function DepositForm({}: DepositFormProps) {
             <Grid container spacing={1}>
                 <Grid item xs={12} mb={"1em"} mt={"-0.8em"}>
                     Assets in Wallet:{" "}
-                    {numberFormat(
-                        balance,
-                        underlying?.symbol,
-                        2,
-                        underlying?.decimals
-                    )}
+                    {numberFormat(balance, symbol, 2, decimals)}
                 </Grid>
                 <Grid item xs={6}>
                     <AssetAmountTextField
                         label="You pay"
-                        symbol={underlying?.symbol as string}
-                        decimals={underlying?.decimals as number}
+                        symbol={symbol as string}
+                        decimals={decimals as number}
                         defaultValue={0n}
                         maxValue={balance}
                         onChange={onChangeInputValue}
@@ -116,27 +80,29 @@ function DepositForm({}: DepositFormProps) {
                 </Grid>
                 <Grid item xs={4} marginTop={"0.5em"} textAlign={"center"}>
                     <Typography variant="body1">
-                        {numberFormat(mintValue as bigint, vault.symbol)}
+                        {numberFormat(mintValue as bigint, vaultSymbol)}
                     </Typography>
                 </Grid>
 
                 <Grid item xs={6}>
                     <Erc20ApproveButton
-                        token={underlying?.address}
+                        token={underlyingAddress}
                         owner={account as EvmAddress}
                         amountNeeded={value}
-                        spender={vault.address}
+                        spender={vaultAddress}
                         onAllowanceChange={onAllowanceChange}
-                        disabled={value === 0n || value > balance}
+                        disabled={value === 0n || value > (balance as bigint)}
                     ></Erc20ApproveButton>
                 </Grid>
                 <Grid item xs={6}>
                     <SendTxButton
                         disabled={
-                            value <= 0n || value > balance || value > allowance
+                            value <= 0n ||
+                            value > (balance as bigint) ||
+                            value > allowance
                         }
                         abi={managedVaultAbi}
-                        address={vault?.address as EvmAddress}
+                        address={vaultAddress as EvmAddress}
                         functionName={"deposit"}
                         args={[value, account]}
                     >

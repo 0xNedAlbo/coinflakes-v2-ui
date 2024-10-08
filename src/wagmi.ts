@@ -1,10 +1,13 @@
 import { http, cookieStorage, createConfig, createStorage } from "wagmi";
-import { mainnet, localhost } from "wagmi/chains";
+import { mainnet, localhost, arbitrum } from "wagmi/chains";
 import { coinbaseWallet, injected } from "wagmi/connectors";
 
 export function getConfig() {
     return createConfig({
-        chains: process.env.NODE_ENV == "production" ? [mainnet] : [localhost],
+        chains:
+            process.env.NODE_ENV == "production"
+                ? [mainnet, arbitrum]
+                : [localhost, arbitrum],
         connectors: [
             injected(),
             coinbaseWallet(),
@@ -19,6 +22,7 @@ export function getConfig() {
         transports: {
             [mainnet.id]: http(process.env.NEXT_PUBLIC_RPC_ENDPOINT!),
             [localhost.id]: http(process.env.NEXT_PUBLIC_RPC_ENDPOINT!),
+            [arbitrum.id]: http(process.env.NEXT_PUBLIC_ARBITRUM_RPC_ENDPOINT!),
         },
     });
 }

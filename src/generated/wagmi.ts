@@ -385,13 +385,6 @@ export const managedVaultAbi = [
   },
   {
     type: 'function',
-    inputs: [{ name: 'amount_', internalType: 'uint256', type: 'uint256' }],
-    name: 'setTotalAssets',
-    outputs: [],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
     inputs: [{ name: '', internalType: 'address', type: 'address' }],
     name: 'shareholders',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
@@ -2847,15 +2840,6 @@ export const useWriteManagedVaultSetManager =
   })
 
 /**
- * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"setTotalAssets"`
- */
-export const useWriteManagedVaultSetTotalAssets =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: managedVaultAbi,
-    functionName: 'setTotalAssets',
-  })
-
-/**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"transfer"`
  */
 export const useWriteManagedVaultTransfer =
@@ -3031,15 +3015,6 @@ export const useSimulateManagedVaultSetManager =
   /*#__PURE__*/ createUseSimulateContract({
     abi: managedVaultAbi,
     functionName: 'setManager',
-  })
-
-/**
- * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link managedVaultAbi}__ and `functionName` set to `"setTotalAssets"`
- */
-export const useSimulateManagedVaultSetTotalAssets =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: managedVaultAbi,
-    functionName: 'setTotalAssets',
   })
 
 /**

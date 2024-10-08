@@ -1,53 +1,15 @@
 import Section from "@/components/Section";
-import {
-    useReadManagedVaultBalanceOf,
-    useReadManagedVaultConvertToAssets,
-    useWatchManagedVaultDepositEvent,
-    useWatchManagedVaultWithdrawEvent,
-} from "@/generated/wagmi";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
+import { useShareholder } from "@/hooks/managed-vault/useShareholder";
 import { useUnderlying } from "@/hooks/managed-vault/useUnderlying";
-import EvmAddress from "@/utils/evmAddress";
 import { numberFormat } from "@/utils/formats";
 import { Box } from "@mui/material";
-import { useAccount } from "wagmi";
 
 export default function YourAssets() {
     const vault = useManagedVault();
     const underlying = useUnderlying();
+    const { shareValue } = useShareholder();
 
-    const { address: account } = useAccount();
-
-    const { data: balance, refetch: refetchBalance } =
-        useReadManagedVaultBalanceOf({
-            address: vault.address,
-            args: [account as EvmAddress],
-        });
-
-    const { data: shareValue } = useReadManagedVaultConvertToAssets({
-        address: vault.address,
-        args: [balance as bigint],
-    });
-
-    useWatchManagedVaultDepositEvent({
-        address: vault.address,
-        onLogs: (logs) => {
-            logs.forEach((logEvent) => {
-                const { owner } = logEvent.args as { owner: EvmAddress };
-                if (owner === account) refetchBalance();
-            });
-        },
-    });
-
-    useWatchManagedVaultWithdrawEvent({
-        address: vault.address,
-        onLogs: (logs) => {
-            logs.forEach((logEvent) => {
-                const { owner } = logEvent.args as { owner: EvmAddress };
-                if (owner === account) refetchBalance();
-            });
-        },
-    });
     return (
         <Section heading="Your Share Value">
             <Box>

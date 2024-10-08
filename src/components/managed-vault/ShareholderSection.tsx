@@ -1,8 +1,11 @@
 import { Grid } from "@mui/material";
 import BuyShares from "./ShareholderSection/BuyShares";
 import SellShares from "./ShareholderSection/SellShares";
+import { useShareholder } from "@/hooks/managed-vault/useShareholder";
 
 function ShareholderSection() {
+    const { isShareholder } = useShareholder();
+    if (!isShareholder) return <></>;
     return (
         <Grid container mt={"4em"} mb={"12em"}>
             <Grid item xs={2}></Grid>

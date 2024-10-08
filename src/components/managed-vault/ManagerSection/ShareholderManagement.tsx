@@ -8,6 +8,7 @@ import {
     useWatchManagedVaultRemoveShareholderEvent,
 } from "@/generated/wagmi";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
+import { useShareholder } from "@/hooks/managed-vault/useShareholder";
 import EvmAddress from "@/utils/evmAddress";
 import {
     AddOutlined,
@@ -16,17 +17,15 @@ import {
 } from "@mui/icons-material";
 import { Box, Grid, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import { useAccount } from "wagmi";
 
 function ShareholderManagement() {
-    const vault = useManagedVault();
+    const { address: vaultAddress, manager } = useManagedVault();
     const [address, setAddress] = useState<string | null>(null);
 
-    const { address: manager } = useAccount();
-
+    const { address: account } = useShareholder();
     const { data: isShareholder, refetch: refetchIsShareholder } =
         useReadManagedVaultIsShareholder({
-            address: address !== null ? vault.address : undefined,
+            address: address !== null ? vaultAddress : undefined,
             args: [address as EvmAddress],
         });
 
@@ -43,14 +42,14 @@ function ShareholderManagement() {
     );
 
     useWatchManagedVaultAddShareholderEvent({
-        address: vault.address,
+        address: vaultAddress,
         onLogs: () => {
             refetchIsShareholder();
         },
     });
 
     useWatchManagedVaultRemoveShareholderEvent({
-        address: vault.address,
+        address: vaultAddress,
         onLogs: () => {
             refetchIsShareholder();
         },
@@ -69,7 +68,7 @@ function ShareholderManagement() {
                     </Grid>
                     <Grid item xs={3}>
                         <SendTxButton
-                            address={vault.address as EvmAddress}
+                            address={vaultAddress as EvmAddress}
                             functionName="addShareholder"
                             args={[address]}
                             disabled={!address || !!isShareholder}
@@ -81,7 +80,7 @@ function ShareholderManagement() {
                     </Grid>
                     <Grid item xs={3}>
                         <SendTxButton
-                            address={vault.address as EvmAddress}
+                            address={vaultAddress as EvmAddress}
                             functionName="removeShareholder"
                             args={[address]}
                             abi={managedVaultAbi}

@@ -4,9 +4,11 @@ import { useContext } from "react";
 import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
 import { ColorModeContext } from "../ColorModeContext";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
+import SwitchChainMenu from "../inputs/SwitchChainMenu";
 
 export default function MainAppBar() {
     const vault = useManagedVault();
+
     const { mode, toggleColorMode } = useContext(ColorModeContext);
     function changeColorMode() {
         toggleColorMode();
@@ -18,6 +20,7 @@ export default function MainAppBar() {
                 <Typography variant="h4">{vault?.name}</Typography>
             </Grid>
             <Grid item xs={1} textAlign={"right"}>
+                <SwitchChainMenu></SwitchChainMenu>
                 <IconButton onClick={changeColorMode}>
                     {mode == "dark" ? (
                         <LightModeOutlined></LightModeOutlined>

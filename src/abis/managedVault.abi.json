@@ -623,19 +623,6 @@
   },
   {
     "type": "function",
-    "name": "setTotalAssets",
-    "inputs": [
-      {
-        "name": "amount_",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
     "name": "shareholders",
     "inputs": [
       {

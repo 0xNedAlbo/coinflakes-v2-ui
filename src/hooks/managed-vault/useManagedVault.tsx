@@ -6,6 +6,7 @@ import {
     useReadManagedVaultAssetsInUse,
     useReadManagedVaultConvertToAssets,
     useReadManagedVaultDecimals,
+    useReadManagedVaultManager,
     useReadManagedVaultName,
     useReadManagedVaultSymbol,
     useReadManagedVaultTotalAssets,
@@ -34,6 +35,7 @@ export type ManagedVaultType = {
     totalSupply?: bigint;
     assetsInUse?: bigint;
     sharePrice?: bigint;
+    manager?: EvmAddress;
 };
 
 export function useManagedVault(): ManagedVaultType {
@@ -65,6 +67,10 @@ export function useManagedVault(): ManagedVaultType {
             address: vault.address,
             args: [BN_1E(vault.decimals || 18)],
         });
+
+    const { data: manager } = useReadManagedVaultManager({
+        address: vault.address,
+    });
 
     useWatchManagedVaultDepositEvent({
         address,
@@ -136,6 +142,7 @@ export function useManagedVault(): ManagedVaultType {
             totalSupply,
             assetsInUse,
             sharePrice,
+            manager,
         });
     }, [
         address,
@@ -146,6 +153,7 @@ export function useManagedVault(): ManagedVaultType {
         totalSupply,
         assetsInUse,
         sharePrice,
+        manager,
     ]);
 
     return vault;

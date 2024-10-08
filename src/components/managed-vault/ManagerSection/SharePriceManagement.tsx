@@ -20,14 +20,22 @@ import {
 import { useEffect, useState } from "react";
 
 function SharePriceManagement() {
-    const vault = useManagedVault();
-    const underlying = useUnderlying();
+    const {
+        address: vaultAddress,
+        assetsInUse,
+        sharePrice,
+        totalSupply,
+        totalAssets,
+        decimals: vaultDecimals,
+    } = useManagedVault();
+    const { decimals: underlyingDecimals, symbol: underlyingSymbol } =
+        useUnderlying();
     const [assets, setAssets] = useState<bigint | null>(null);
     const [currentAssetsInUse, setCurrentAssetsInUse] = useState<bigint>(0n);
 
     useEffect(() => {
-        setCurrentAssetsInUse(vault.assetsInUse as bigint);
-    }, [vault.assetsInUse]);
+        setCurrentAssetsInUse(assetsInUse as bigint);
+    }, [assetsInUse]);
 
     function isValueValid(): boolean {
         if (!assets) return false;
@@ -36,17 +44,16 @@ function SharePriceManagement() {
     }
 
     function newSharePrice() {
-        if (!isValueValid()) return vault.sharePrice;
-        if (!assets) return vault.sharePrice;
-        if (vault.totalSupply == 0n)
-            return BN_1E(underlying.decimals as number);
-        if (vault?.totalAssets === undefined)
-            return BN_1E(underlying.decimals as number);
-        const newTotalAssets = vault.totalAssets - currentAssetsInUse + assets;
-        if (newTotalAssets == 0n) return BN_1E(underlying.decimals as number);
+        if (!isValueValid()) return sharePrice;
+        if (!assets) return sharePrice;
+        if (totalSupply == 0n) return BN_1E(underlyingDecimals as number);
+        if (totalAssets === undefined)
+            return BN_1E(underlyingDecimals as number);
+        const newTotalAssets = totalAssets - currentAssetsInUse + assets;
+        if (newTotalAssets == 0n) return BN_1E(underlyingDecimals as number);
         return (
-            (newTotalAssets * BN_1E(vault.decimals as number)) /
-            (vault.totalSupply as bigint)
+            (newTotalAssets * BN_1E(vaultDecimals as number)) /
+            (totalSupply as bigint)
         );
     }
 
@@ -58,8 +65,8 @@ function SharePriceManagement() {
                         <AssetAmountTextField
                             label="Assets in Use"
                             onChange={setAssets}
-                            symbol={underlying.symbol as string}
-                            decimals={underlying.decimals as number}
+                            symbol={underlyingSymbol as string}
+                            decimals={underlyingDecimals as number}
                             defaultValue={currentAssetsInUse}
                         ></AssetAmountTextField>
                     </Grid>
@@ -68,7 +75,7 @@ function SharePriceManagement() {
                             disabled={!isValueValid()}
                             icon={<CalculateOutlined />}
                             abi={managedVaultAbi}
-                            address={vault.address as EvmAddress}
+                            address={vaultAddress as EvmAddress}
                             functionName={"setAssetsInUse"}
                             args={[assets]}
                         >
@@ -97,9 +104,9 @@ function SharePriceManagement() {
                                     <Typography variant="body1">
                                         {numberFormat(
                                             currentAssetsInUse,
-                                            underlying.symbol,
+                                            underlyingSymbol,
                                             2,
-                                            underlying.decimals
+                                            underlyingDecimals
                                         )}
                                     </Typography>
                                 </TableCell>
@@ -123,9 +130,9 @@ function SharePriceManagement() {
                                         {assets ? (
                                             numberFormat(
                                                 assets,
-                                                underlying.symbol,
+                                                underlyingSymbol,
                                                 2,
-                                                underlying.decimals
+                                                underlyingDecimals
                                             )
                                         ) : (
                                             <i>invalid value</i>
@@ -173,9 +180,9 @@ function SharePriceManagement() {
                                         ) : (
                                             numberFormat(
                                                 assets - currentAssetsInUse,
-                                                underlying.symbol,
+                                                underlyingSymbol,
                                                 2,
-                                                underlying.decimals
+                                                underlyingDecimals
                                             )
                                         )}
                                     </Typography>
@@ -199,9 +206,9 @@ function SharePriceManagement() {
                                     <Typography variant="body1">
                                         {numberFormat(
                                             newSharePrice(),
-                                            underlying.symbol,
+                                            underlyingSymbol,
                                             2,
-                                            underlying.decimals
+                                            underlyingDecimals
                                         )}
                                     </Typography>
                                 </TableCell>
