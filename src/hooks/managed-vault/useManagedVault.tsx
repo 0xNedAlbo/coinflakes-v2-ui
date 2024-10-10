@@ -21,7 +21,6 @@ import {
 } from "@/generated/wagmi";
 import { isAddress } from "viem";
 import { BN_1E } from "@/utils/constants";
-import { useChainId } from "wagmi";
 
 export const ManagedVaultContext = createContext<EvmAddress | undefined>(
     undefined
@@ -53,7 +52,9 @@ export function useManagedVault(): ManagedVaultType {
 
     const [vault, setVault] = useState<ManagedVaultType>({});
 
-    const { data: name } = useReadManagedVaultName({ address });
+    const { data: name } = useReadManagedVaultName({
+        address,
+    });
 
     const { data: symbol } = useReadManagedVaultSymbol({ address });
     const { data: decimals } = useReadManagedVaultDecimals({ address });

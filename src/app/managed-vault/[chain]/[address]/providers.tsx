@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
-import { cookieToInitialState, WagmiProvider } from "wagmi";
+import { cookieToInitialState, type State, WagmiProvider } from "wagmi";
 import { ConnectKitProvider } from "connectkit";
 
 import { getConfig } from "@/wagmi";
@@ -11,8 +11,13 @@ import { PaletteMode } from "@mui/material";
 import { ColorModeContext } from "@/components/ColorModeContext";
 
 import { useCookies } from "react-cookie";
+import EvmAddress from "@/utils/evmAddress";
+import { ManagedVaultContext } from "@/hooks/managed-vault/useManagedVault";
 
-export function Providers(props: { children: ReactNode }) {
+export function Providers(props: {
+    children: ReactNode;
+    params: { chain: string; address: EvmAddress };
+}) {
     const [cookies, setCookie] = useCookies();
     const [mode, setMode] = useState<PaletteMode>("light");
     const [config] = useState(() => getConfig());
@@ -40,19 +45,26 @@ export function Providers(props: { children: ReactNode }) {
         [mode]
     );
 
+    const params = props.params;
     const initialState = cookieToInitialState(getConfig(), document.cookie);
-    if (initialState) initialState.chainId = 1;
+    if (initialState !== undefined) {
+        if (params.chain == "ethereum") (initialState as State).chainId = 1;
+        else if (params.chain == "arbitrum") initialState.chainId = 42161;
+        else if (params.chain == "localhost") initialState.chainId = 1337;
+    }
 
     return (
         <ColorModeContext.Provider value={{ mode, toggleColorMode }}>
             <ThemeProvider theme={theme}>
                 <WagmiProvider config={config} initialState={initialState}>
                     <QueryClientProvider client={queryClient}>
-                        <ConnectKitProvider
-                            theme={mode == "light" ? "soft" : "midnight"}
-                        >
-                            {props.children}
-                        </ConnectKitProvider>
+                        <ManagedVaultContext.Provider value={params.address}>
+                            <ConnectKitProvider
+                                theme={mode == "light" ? "soft" : "midnight"}
+                            >
+                                {props.children}
+                            </ConnectKitProvider>
+                        </ManagedVaultContext.Provider>
                     </QueryClientProvider>
                 </WagmiProvider>
             </ThemeProvider>

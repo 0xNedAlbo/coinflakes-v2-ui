@@ -1,12 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
-import { headers } from "next/headers";
 import { type ReactNode } from "react";
-import { cookieToInitialState } from "wagmi";
-
-import { getConfig } from "../wagmi";
-import { Providers } from "./providers";
 
 const robotoFont = Roboto({
     weight: ["100", "300", "400", "500", "700", "900"],
@@ -39,17 +34,9 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout(props: { children: ReactNode }) {
-    const initialState = cookieToInitialState(
-        getConfig(),
-        headers().get("cookie")
-    );
     return (
         <html lang="en">
-            <body className={robotoFont.className}>
-                <Providers initialState={initialState}>
-                    {props.children}
-                </Providers>
-            </body>
+            <body className={robotoFont.className}>{props.children}</body>
         </html>
     );
 }

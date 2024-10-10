@@ -5,15 +5,18 @@ import MigrationSection from "@/components/MigrationSection";
 import ShareholderSection from "@/components/ShareholderSection";
 import VaultSummary from "@/components/VaultSummary";
 import { CssBaseline } from "@mui/material";
+import { Providers } from "./providers";
 
 function App() {
     return (
         <>
-            <CssBaseline />
-            <MainAppBar></MainAppBar>
-            <VaultSummary></VaultSummary>
-            <MigrationSection></MigrationSection>
-            <ShareholderSection></ShareholderSection>
+            <Providers>
+                <CssBaseline />
+                <MainAppBar></MainAppBar>
+                <VaultSummary></VaultSummary>
+                <MigrationSection></MigrationSection>
+                <ShareholderSection></ShareholderSection>
+            </Providers>
         </>
     );
 }
