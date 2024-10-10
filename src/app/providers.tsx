@@ -40,9 +40,11 @@ export function Providers(props: { children: ReactNode }) {
         [mode]
     );
 
-    const initialState = cookieToInitialState(getConfig(), document.cookie);
-    if (initialState) initialState.chainId = 1;
-
+    let initialState;
+    if (document) {
+        initialState = cookieToInitialState(getConfig(), document.cookie);
+        if (initialState) initialState.chainId = 1;
+    }
     return (
         <ColorModeContext.Provider value={{ mode, toggleColorMode }}>
             <ThemeProvider theme={theme}>

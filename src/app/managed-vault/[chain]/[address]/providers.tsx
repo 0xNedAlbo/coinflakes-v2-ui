@@ -46,11 +46,14 @@ export function Providers(props: {
     );
 
     const params = props.params;
-    const initialState = cookieToInitialState(getConfig(), document.cookie);
-    if (initialState !== undefined) {
-        if (params.chain == "ethereum") (initialState as State).chainId = 1;
-        else if (params.chain == "arbitrum") initialState.chainId = 42161;
-        else if (params.chain == "localhost") initialState.chainId = 1337;
+    let initialState;
+    if (document) {
+        initialState = cookieToInitialState(getConfig(), document.cookie);
+        if (initialState !== undefined) {
+            if (params.chain == "ethereum") (initialState as State).chainId = 1;
+            else if (params.chain == "arbitrum") initialState.chainId = 42161;
+            else if (params.chain == "localhost") initialState.chainId = 1337;
+        }
     }
 
     return (
