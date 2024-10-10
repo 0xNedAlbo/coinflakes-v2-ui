@@ -1,24 +1,10 @@
-"use client";
+"use server";
 
-import MainAppBar from "@/components/MainAppBar";
-import MigrationSection from "@/components/MigrationSection";
-import ShareholderSection from "@/components/ShareholderSection";
-import VaultSummary from "@/components/VaultSummary";
-import { CssBaseline } from "@mui/material";
-import { Providers } from "./providers";
+import { redirect } from "next/navigation";
 
 function App() {
-    return (
-        <>
-            <Providers>
-                <CssBaseline />
-                <MainAppBar></MainAppBar>
-                <VaultSummary></VaultSummary>
-                <MigrationSection></MigrationSection>
-                <ShareholderSection></ShareholderSection>
-            </Providers>
-        </>
-    );
+    redirect("/v2/ethereum");
+    return <></>;
 }
 
 export default App;

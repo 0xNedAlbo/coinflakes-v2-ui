@@ -1,6 +1,6 @@
 import { http, cookieStorage, createConfig, createStorage } from "wagmi";
 import { mainnet, localhost, arbitrum } from "wagmi/chains";
-import { coinbaseWallet, injected, walletConnect } from "wagmi/connectors";
+import { injected, walletConnect } from "wagmi/connectors";
 
 export function getConfig() {
     return createConfig({
@@ -10,7 +10,6 @@ export function getConfig() {
                 : [localhost, mainnet, arbitrum],
         connectors: [
             injected(),
-            coinbaseWallet(),
             walletConnect({
                 projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID as string,
                 showQrModal: false,

@@ -2,26 +2,28 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
-import { cookieToInitialState, type State, WagmiProvider } from "wagmi";
+import { type State, WagmiProvider } from "wagmi";
 import { ConnectKitProvider } from "connectkit";
 
-import { getConfig } from "@/wagmi";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { PaletteMode } from "@mui/material";
 import { ColorModeContext } from "@/components/ColorModeContext";
 
 import { useCookies } from "react-cookie";
-import EvmAddress from "@/utils/evmAddress";
 import { ManagedVaultContext } from "@/hooks/managed-vault/useManagedVault";
+import { getConfig } from "@/wagmiConfig";
+import { useParams } from "next/navigation";
+import EvmAddress from "@/utils/evmAddress";
 
 export function Providers(props: {
     children: ReactNode;
-    params: { chain: string; address: EvmAddress };
+    initialState?: State;
 }) {
     const [cookies, setCookie] = useCookies();
     const [mode, setMode] = useState<PaletteMode>("light");
     const [config] = useState(() => getConfig());
     const [queryClient] = useState(() => new QueryClient());
+    const params = useParams();
 
     function toggleColorMode() {
         let expires = new Date();
@@ -45,23 +47,21 @@ export function Providers(props: {
         [mode]
     );
 
-    const params = props.params;
-    let initialState;
-    if (document) {
-        initialState = cookieToInitialState(getConfig(), document.cookie);
-        if (initialState !== undefined) {
-            if (params.chain == "ethereum") (initialState as State).chainId = 1;
-            else if (params.chain == "arbitrum") initialState.chainId = 42161;
-            else if (params.chain == "localhost") initialState.chainId = 1337;
-        }
+    const initialState = props.initialState;
+    if (initialState) {
+        if (params.chain === "ethereum") initialState.chainId = 1;
+        else if (params.chain === "arbitrum") initialState.chainId = 42161;
+        else if (params.chain === "localhost") initialState.chainId = 1337;
+        else throw new Error("Unsupported chain: " + params.chain);
     }
-
     return (
         <ColorModeContext.Provider value={{ mode, toggleColorMode }}>
             <ThemeProvider theme={theme}>
                 <WagmiProvider config={config} initialState={initialState}>
                     <QueryClientProvider client={queryClient}>
-                        <ManagedVaultContext.Provider value={params.address}>
+                        <ManagedVaultContext.Provider
+                            value={params.address as EvmAddress}
+                        >
                             <ConnectKitProvider
                                 theme={mode == "light" ? "soft" : "midnight"}
                             >

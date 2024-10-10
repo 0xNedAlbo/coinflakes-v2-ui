@@ -2,21 +2,27 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
-import { cookieToInitialState, WagmiProvider } from "wagmi";
+import { State, WagmiProvider } from "wagmi";
 import { ConnectKitProvider } from "connectkit";
 
-import { getConfig } from "@/wagmi";
+import { getConfig } from "@/wagmiConfig";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { PaletteMode } from "@mui/material";
 import { ColorModeContext } from "@/components/ColorModeContext";
 
 import { useCookies } from "react-cookie";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 
-export function Providers(props: { children: ReactNode }) {
+export function Providers(props: {
+    children: ReactNode;
+    initialState?: State;
+}) {
     const [cookies, setCookie] = useCookies();
+
     const [mode, setMode] = useState<PaletteMode>("light");
     const [config] = useState(() => getConfig());
     const [queryClient] = useState(() => new QueryClient());
+    const params = useParams<{ chain: string }>();
 
     function toggleColorMode() {
         let expires = new Date();
@@ -40,15 +46,18 @@ export function Providers(props: { children: ReactNode }) {
         [mode]
     );
 
-    let initialState;
-    if (document) {
-        initialState = cookieToInitialState(getConfig(), document.cookie);
-        if (initialState) initialState.chainId = 1;
+    if (props.initialState) {
+        if (params.chain === "ethereum") props.initialState.chainId = 1;
+        else throw new Error("Invalid chain: " + params.chain);
     }
+
     return (
         <ColorModeContext.Provider value={{ mode, toggleColorMode }}>
             <ThemeProvider theme={theme}>
-                <WagmiProvider config={config} initialState={initialState}>
+                <WagmiProvider
+                    config={config}
+                    initialState={props.initialState}
+                >
                     <QueryClientProvider client={queryClient}>
                         <ConnectKitProvider
                             theme={mode == "light" ? "soft" : "midnight"}
