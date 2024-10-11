@@ -8,3 +8,9 @@ export const BN_1E = (exp: number) => 10n ** BigInt(exp);
 export const ADDR_BLACKHOLE = "0x0000000000000000000000000000000000000000";
 export const ADDR_DEADBEEF = "0x00000000000000000000000000000000deadbeef";
 export const ADDR_ZERO = ADDR_BLACKHOLE;
+
+export const CHAIN_SLUGS = {
+    ethereum: 1,
+    arbitrum: 42161,
+    localhost: 1337,
+} as { [key: string]: number };

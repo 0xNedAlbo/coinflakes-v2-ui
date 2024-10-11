@@ -1,5 +1,6 @@
 "use client";
 
+import { RequiredChainPrompt } from "@/components/inputs/RequiredChainPrompt";
 import { DocumentTitle } from "@/components/managed-vault/DocumentTitle";
 import MainAppBar from "@/components/managed-vault/MainAppBar";
 import ManagerSection from "@/components/managed-vault/ManagerSection";
@@ -13,9 +14,10 @@ function App() {
             <DocumentTitle />
             <CssBaseline />
             <MainAppBar></MainAppBar>
+            <RequiredChainPrompt></RequiredChainPrompt>
             <VaultSummary></VaultSummary>
-            {<ManagerSection></ManagerSection>}
-            {<ShareholderSection></ShareholderSection>}
+            <ManagerSection></ManagerSection>
+            <ShareholderSection></ShareholderSection>
         </>
     );
 }

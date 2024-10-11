@@ -1,5 +1,6 @@
 "use client";
 
+import { RequiredChainPrompt } from "@/components/inputs/RequiredChainPrompt";
 import MainAppBar from "@/components/MainAppBar";
 import MigrationSection from "@/components/MigrationSection";
 import ShareholderSection from "@/components/ShareholderSection";
@@ -11,6 +12,7 @@ function App() {
         <>
             <CssBaseline />
             <MainAppBar></MainAppBar>
+            <RequiredChainPrompt></RequiredChainPrompt>
             <VaultSummary></VaultSummary>
             <MigrationSection></MigrationSection>
             <ShareholderSection></ShareholderSection>

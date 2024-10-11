@@ -1,4 +1,8 @@
-import { CheckOutlined, ErrorOutlined } from "@mui/icons-material";
+import {
+    CheckOutlined,
+    ErrorOutlined,
+    RestaurantMenu,
+} from "@mui/icons-material";
 import { Button, CircularProgress } from "@mui/material";
 import { erc20Abi } from "viem";
 import { useCallback, useEffect, useState } from "react";
@@ -42,13 +46,12 @@ function Erc20ApproveButton({
     successLabel = successLabel || "Approved";
     const [allowance, setAllowance] = useState(0n);
 
-    const { data: initialAllowance, refetch: refetchAllowance } =
-        useReadContract({
-            address: token,
-            abi: erc20Abi,
-            functionName: "allowance",
-            args: [owner as EvmAddress, spender as EvmAddress],
-        });
+    const { data: initialAllowance } = useReadContract({
+        address: token,
+        abi: erc20Abi,
+        functionName: "allowance",
+        args: [owner as EvmAddress, spender as EvmAddress],
+    });
 
     const {
         writeContract: sendTx,
