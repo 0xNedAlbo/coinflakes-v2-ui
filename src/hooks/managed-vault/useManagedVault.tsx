@@ -1,30 +1,14 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 import EvmAddress from "@/utils/evmAddress";
 
 import {
-    useReadManagedVaultAssetsInUse,
+    managedVaultAbi,
     useReadManagedVaultConvertToAssets,
-    useReadManagedVaultDecimals,
-    useReadManagedVaultManager,
-    useReadManagedVaultName,
-    useReadManagedVaultSymbol,
-    useReadManagedVaultTotalAssets,
-    useReadManagedVaultTotalSupply,
-    useWatchManagedVaultDepositEvent,
-    useWatchManagedVaultFeesEvent,
-    useWatchManagedVaultGainsEvent,
-    useWatchManagedVaultLossEvent,
-    useWatchManagedVaultReturnAssetsEvent,
-    useWatchManagedVaultUseAssetsEvent,
-    useWatchManagedVaultWithdrawEvent,
 } from "@/generated/wagmi";
 import { isAddress } from "viem";
 import { BN_1E } from "@/utils/constants";
-
-export const ManagedVaultContext = createContext<EvmAddress | undefined>(
-    undefined
-);
+import { useReadContracts, useWatchContractEvent } from "wagmi";
 
 export type ManagedVaultType = {
     address?: EvmAddress;
@@ -38,72 +22,146 @@ export type ManagedVaultType = {
     manager?: EvmAddress;
 };
 
-export function useManagedVault(): ManagedVaultType {
+export const ManagedVaultContext = createContext<ManagedVaultType>({});
+
+export function useManagedVault() {
+    const vault = useContext(ManagedVaultContext);
+    return vault;
+}
+
+export function ManagedVaultProvider(props: {
+    children: React.ReactNode;
+    address: EvmAddress;
+}): React.ReactNode {
     const address = useContext(ManagedVaultContext);
 
-    if (!address) {
+    if (!props.address) {
         throw new Error(
             "useManageVault must be used within ManagedVaultContext"
         );
     }
-    if (!isAddress(address as string)) {
+
+    if (!isAddress(props.address as string)) {
         throw new Error("vault address is not an EVM address");
     }
+    console.log("Managed Vault Provider");
+    const [name, setName] = useState<string>();
+    const [symbol, setSymbol] = useState<string>();
+    const [decimals, setDecimals] = useState<number>();
+    const [manager, setManager] = useState<EvmAddress>();
+    const [totalAssets, setTotalAssets] = useState<bigint>();
+    const [assetsInUse, setAssetsInUse] = useState<bigint>();
+    const [totalSupply, setTotalSupply] = useState<bigint>();
 
-    const [vault, setVault] = useState<ManagedVaultType>({});
+    const managedVaultContext = {
+        address: props.address,
+        abi: managedVaultAbi,
+    };
 
-    const { data: name } = useReadManagedVaultName({
-        address,
+    const { data: contractData } = useReadContracts({
+        contracts: [
+            {
+                ...managedVaultContext,
+                functionName: "name",
+                args: [],
+            },
+            {
+                ...managedVaultContext,
+                functionName: "symbol",
+                args: [],
+            },
+            {
+                ...managedVaultContext,
+                functionName: "decimals",
+                args: [],
+            },
+            {
+                ...managedVaultContext,
+                functionName: "manager",
+                args: [],
+            },
+        ],
     });
 
-    const { data: symbol } = useReadManagedVaultSymbol({ address });
-    const { data: decimals } = useReadManagedVaultDecimals({ address });
-    const { data: totalAssets, refetch: refetchTotalAssets } =
-        useReadManagedVaultTotalAssets({ address });
-    const { data: assetsInUse, refetch: refetchAssetsInUse } =
-        useReadManagedVaultAssetsInUse({ address });
-    const { data: totalSupply, refetch: refetchTotalSupply } =
-        useReadManagedVaultTotalSupply({ address });
+    useEffect(() => {
+        if (!contractData) return;
+        setName(contractData[0].result);
+        setSymbol(contractData[1].result);
+        setDecimals(contractData[2].result);
+        setManager(contractData[3]?.result);
+    }, [contractData]);
+
+    const { data: tokenomics, refetch: refetchTokennomics } = useReadContracts({
+        contracts: [
+            { ...managedVaultContext, functionName: "totalAssets", args: [] },
+            { ...managedVaultContext, functionName: "assetsInUse", args: [] },
+            { ...managedVaultContext, functionName: "totalSupply", args: [] },
+        ],
+    });
+
+    useEffect(() => {
+        if (!tokenomics) return;
+        setTotalAssets(tokenomics[0].result);
+        setAssetsInUse(tokenomics[1].result);
+        setTotalSupply(tokenomics[2].result);
+    }, [tokenomics]);
 
     const { data: sharePrice, refetch: refetchSharePrice } =
         useReadManagedVaultConvertToAssets({
-            address: vault.address,
-            args: [BN_1E(vault.decimals || 18)],
+            address: props.address,
+            args: [BN_1E(decimals || 18)],
         });
 
-    const { data: manager } = useReadManagedVaultManager({
-        address: vault.address,
+    useWatchContractEvent({
+        address: props.address,
+        abi: managedVaultAbi,
+        onLogs: (events) => {
+            let triggerRefetch = false;
+            events.forEach((event) => {
+                if (
+                    event.eventName == "ReturnAssets" ||
+                    event.eventName == "UseAssets" ||
+                    event.eventName == "Deposit" ||
+                    event.eventName == "Withdraw" ||
+                    event.eventName == "Gains" ||
+                    event.eventName == "Loss" ||
+                    event.eventName == "Fees"
+                )
+                    triggerRefetch = true;
+            });
+            if (triggerRefetch) {
+                console.log("Refetch");
+                refetchTokennomics();
+                refetchSharePrice();
+            }
+        },
     });
 
-    useWatchManagedVaultDepositEvent({
+    /*     useWatchManagedVaultDepositEvent({
         address,
         onLogs: () => {
-            refetchTotalAssets();
-            refetchTotalSupply();
+            refetchTokennomics();
         },
     });
 
     useWatchManagedVaultWithdrawEvent({
         address,
         onLogs: () => {
-            refetchTotalAssets();
-            refetchTotalSupply();
+            refetchTokennomics();
         },
     });
 
     useWatchManagedVaultUseAssetsEvent({
         address,
         onLogs: () => {
-            refetchAssetsInUse();
-            refetchTotalAssets();
+            refetchTokennomics();
         },
     });
 
     useWatchManagedVaultReturnAssetsEvent({
         address,
         onLogs: () => {
-            refetchAssetsInUse();
-            refetchTotalAssets();
+            refetchTokennomics();
             refetchSharePrice();
         },
     });
@@ -111,8 +169,7 @@ export function useManagedVault(): ManagedVaultType {
     useWatchManagedVaultGainsEvent({
         address,
         onLogs: () => {
-            refetchAssetsInUse();
-            refetchTotalAssets();
+            refetchTokennomics();
             refetchSharePrice();
         },
     });
@@ -120,8 +177,7 @@ export function useManagedVault(): ManagedVaultType {
     useWatchManagedVaultLossEvent({
         address,
         onLogs: () => {
-            refetchAssetsInUse();
-            refetchTotalAssets();
+            refetchTokennomics();
             refetchSharePrice();
         },
     });
@@ -129,35 +185,26 @@ export function useManagedVault(): ManagedVaultType {
     useWatchManagedVaultFeesEvent({
         address,
         onLogs: () => {
-            refetchAssetsInUse();
-            refetchTotalAssets();
+            refetchTokennomics();
             refetchSharePrice();
         },
     });
-
-    useEffect(() => {
-        setVault({
-            address,
-            name,
-            symbol,
-            decimals,
-            totalAssets,
-            totalSupply,
-            assetsInUse,
-            sharePrice,
-            manager,
-        });
-    }, [
-        address,
-        name,
-        symbol,
-        decimals,
-        totalAssets,
-        totalSupply,
-        assetsInUse,
-        sharePrice,
-        manager,
-    ]);
-
-    return vault;
+ */
+    return (
+        <ManagedVaultContext.Provider
+            value={{
+                address: props.address,
+                name,
+                symbol,
+                decimals,
+                totalAssets,
+                assetsInUse,
+                totalSupply,
+                sharePrice,
+                manager,
+            }}
+        >
+            {props.children}
+        </ManagedVaultContext.Provider>
+    );
 }

@@ -7,7 +7,7 @@ import { useUnderlying } from "@/hooks/managed-vault/useUnderlying";
 import { BN_1E } from "@/utils/constants";
 import EvmAddress from "@/utils/evmAddress";
 import { numberFormat } from "@/utils/formats";
-import { CalculateOutlined, RestartAltOutlined } from "@mui/icons-material";
+import { CalculateOutlined } from "@mui/icons-material";
 import {
     Box,
     Grid,

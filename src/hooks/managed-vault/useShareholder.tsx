@@ -1,5 +1,11 @@
 import EvmAddress from "@/utils/evmAddress";
-import { useEffect, useState } from "react";
+import {
+    createContext,
+    ReactNode,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
 import { useManagedVault } from "./useManagedVault";
 import { useUnderlying } from "./useUnderlying";
 import {
@@ -24,11 +30,18 @@ export type ShareholderType = {
     maxRedeem?: bigint;
 };
 
-export function useShareholder(): ShareholderType {
+const ShareholderContext = createContext<ShareholderType>({});
+
+export function useShareholder() {
+    const shareholder = useContext(ShareholderContext);
+    return shareholder;
+}
+
+export function ShareholderProvider(props: { children: ReactNode }): ReactNode {
     const { address: vaultAddress, sharePrice } = useManagedVault();
     const { address: underlyingAddress } = useUnderlying();
     const { address: account } = useAccount();
-    const [shareholder, setShareholder] = useState<ShareholderType>({});
+    console.log("Shareholder Provider");
 
     const { data: shares, refetch: refetchVaultBalance } =
         useReadManagedVaultBalanceOf({
@@ -111,32 +124,19 @@ export function useShareholder(): ShareholderType {
         refetchShareValue();
     }, [sharePrice, shares]);
 
-    useEffect(() => {
-        if (!account) setShareholder({});
-        else if (underlyingBalance === undefined) setShareholder({});
-        else if (shares === undefined) setShareholder({});
-        else if (sharePrice === undefined) setShareholder({});
-        else {
-            setShareholder({
+    return (
+        <ShareholderContext.Provider
+            value={{
                 address: account,
                 underlyingBalance,
                 shares,
-                isShareholder: Boolean(isShareholder),
-                isManager: manager === account,
+                isShareholder,
+                isManager: manager == account,
                 shareValue,
                 maxRedeem,
-            });
-        }
-    }, [
-        account,
-        shares,
-        underlyingBalance,
-        isShareholder,
-        manager,
-        shares,
-        shareValue,
-        maxRedeem,
-    ]);
-
-    return shareholder;
+            }}
+        >
+            {props.children}
+        </ShareholderContext.Provider>
+    );
 }

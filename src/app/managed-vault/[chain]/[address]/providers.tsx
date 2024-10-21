@@ -10,10 +10,16 @@ import { PaletteMode } from "@mui/material";
 import { ColorModeContext } from "@/components/ColorModeContext";
 
 import { useCookies } from "react-cookie";
-import { ManagedVaultContext } from "@/hooks/managed-vault/useManagedVault";
+import {
+    ManagedVaultContext,
+    ManagedVaultProvider,
+} from "@/hooks/managed-vault/useManagedVault";
 import { getConfig } from "@/wagmiConfig";
 import { useParams } from "next/navigation";
 import EvmAddress from "@/utils/evmAddress";
+import { UnderlyingProvider } from "@/hooks/managed-vault/useUnderlying";
+import { ShareholderProvider } from "@/hooks/managed-vault/useShareholder";
+import { ManagerProvider } from "@/hooks/managed-vault/useManager";
 
 export function Providers(props: {
     children: ReactNode;
@@ -59,15 +65,21 @@ export function Providers(props: {
             <ThemeProvider theme={theme}>
                 <WagmiProvider config={config} initialState={initialState}>
                     <QueryClientProvider client={queryClient}>
-                        <ManagedVaultContext.Provider
-                            value={params.address as EvmAddress}
+                        <ConnectKitProvider
+                            theme={mode == "light" ? "soft" : "midnight"}
                         >
-                            <ConnectKitProvider
-                                theme={mode == "light" ? "soft" : "midnight"}
+                            <ManagedVaultProvider
+                                address={params.address as EvmAddress}
                             >
-                                {props.children}
-                            </ConnectKitProvider>
-                        </ManagedVaultContext.Provider>
+                                <UnderlyingProvider>
+                                    <ShareholderProvider>
+                                        <ManagerProvider>
+                                            {props.children}
+                                        </ManagerProvider>
+                                    </ShareholderProvider>
+                                </UnderlyingProvider>
+                            </ManagedVaultProvider>
+                        </ConnectKitProvider>
                     </QueryClientProvider>
                 </WagmiProvider>
             </ThemeProvider>

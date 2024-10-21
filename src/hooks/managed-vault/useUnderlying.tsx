@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 import EvmAddress from "@/utils/evmAddress";
 
@@ -14,10 +14,17 @@ export type UnderlyingType = {
     decimals?: number;
 };
 
-export function useUnderlying(): UnderlyingType {
-    const vault = useManagedVault();
+const UnderlyingContext = createContext<UnderlyingType>({});
 
-    const [underlying, setUnderlying] = useState<UnderlyingType>({});
+export function useUnderlying() {
+    const underlying = useContext(UnderlyingContext);
+    return underlying;
+}
+
+export function UnderlyingProvider(props: {
+    children: React.ReactNode;
+}): React.ReactNode {
+    const vault = useManagedVault();
 
     const { data: address } = useReadManagedVaultAsset({
         address: vault?.address,
@@ -39,18 +46,16 @@ export function useUnderlying(): UnderlyingType {
         functionName: "decimals",
     });
 
-    useEffect(() => {
-        if (!address) return;
-        if (!name) return;
-        if (!symbol) return;
-        if (!decimals) return;
-        setUnderlying({
-            address,
-            name,
-            symbol,
-            decimals,
-        });
-    }, [address, name, symbol, decimals]);
-
-    return underlying;
+    return (
+        <UnderlyingContext.Provider
+            value={{
+                address,
+                name,
+                symbol,
+                decimals,
+            }}
+        >
+            {props.children}
+        </UnderlyingContext.Provider>
+    );
 }

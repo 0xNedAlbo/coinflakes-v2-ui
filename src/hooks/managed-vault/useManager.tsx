@@ -1,8 +1,8 @@
 import EvmAddress from "@/utils/evmAddress";
-import { useEffect, useState } from "react";
+import { createContext, ReactNode, useContext } from "react";
 import { useManagedVault } from "./useManagedVault";
 import { useUnderlying } from "./useUnderlying";
-import { managedVaultAbi, useReadManagedVaultManager } from "@/generated/wagmi";
+import { useReadManagedVaultManager } from "@/generated/wagmi";
 import { useAccount, useReadContract, useWatchContractEvent } from "wagmi";
 import { erc20Abi } from "viem";
 
@@ -13,11 +13,17 @@ export type ManagerType = {
     isAccount?: Boolean;
 };
 
-export function useManager(): ManagerType {
+const ManagerContext = createContext<ManagerType>({});
+
+export function useManager() {
+    const manager = useContext(ManagerContext);
+    return manager;
+}
+
+export function ManagerProvider(props: { children: ReactNode }): ReactNode {
     const { address: vaultAddress } = useManagedVault();
     const { address: underlyingAddress } = useUnderlying();
     const { address: account } = useAccount();
-    const [manager, setManager] = useState<ManagerType>({});
 
     const { data: managerAddress } = useReadManagedVaultManager({
         address: vaultAddress,
@@ -70,19 +76,16 @@ export function useManager(): ManagerType {
         abi: erc20Abi,
     });
 
-    useEffect(() => {
-        if (!account) setManager({});
-        else if (balance === undefined) setManager({});
-        else if (withdrawableAssets === undefined) setManager({});
-        else {
-            setManager({
+    return (
+        <ManagerContext.Provider
+            value={{
                 address: managerAddress,
                 balance,
                 isAccount: Boolean(managerAddress == account),
                 withdrawableAssets,
-            });
-        }
-    }, [account, managerAddress, balance, withdrawableAssets]);
-
-    return manager;
+            }}
+        >
+            {props.children}
+        </ManagerContext.Provider>
+    );
 }
