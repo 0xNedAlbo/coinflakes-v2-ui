@@ -7,14 +7,14 @@ import YourShares from "./VaultSummary/YourShares";
 import { useShareholder } from "@/hooks/managed-vault/useShareholder";
 
 export default function VaultSummary() {
-    const { isShareholder } = useShareholder();
+    const shareholder = useShareholder();
     return (
         <Grid container mt={"4em"}>
             <Grid item xs={2}></Grid>
             <Grid item xs={8}>
                 <Grid container spacing={5}>
                     <Grid item xs={4}>
-                        {isShareholder ? (
+                        {shareholder?.isShareholder ? (
                             <YourAssets></YourAssets>
                         ) : (
                             <AssetsUnderManagement></AssetsUnderManagement>
@@ -24,7 +24,7 @@ export default function VaultSummary() {
                         <CurrentSharePrice></CurrentSharePrice>
                     </Grid>
                     <Grid item xs={4}>
-                        {isShareholder ? (
+                        {shareholder?.isShareholder ? (
                             <YourShares></YourShares>
                         ) : (
                             <VaultTotalSupply></VaultTotalSupply>

@@ -7,14 +7,15 @@ import { erc20Abi } from "viem";
 import { useManagedVault } from "./useManagedVault";
 import { useReadContract } from "wagmi";
 
-export type UnderlyingType = {
-    address?: EvmAddress;
-    name?: string;
-    symbol?: string;
-    decimals?: number;
+export type Underlying = {
+    address: EvmAddress;
+    name: string;
+    symbol: string;
+    decimals: number;
 };
 
-const UnderlyingContext = createContext<UnderlyingType>({});
+export type UseUnderlyingReturnType = Underlying | undefined;
+const UnderlyingContext = createContext<UseUnderlyingReturnType>(undefined);
 
 export function useUnderlying() {
     const underlying = useContext(UnderlyingContext);
@@ -24,6 +25,8 @@ export function useUnderlying() {
 export function UnderlyingProvider(props: {
     children: React.ReactNode;
 }): React.ReactNode {
+    const [underlying, setUnderlying] =
+        useState<UseUnderlyingReturnType>(undefined);
     const vault = useManagedVault();
 
     const { data: address } = useReadManagedVaultAsset({
@@ -46,15 +49,20 @@ export function UnderlyingProvider(props: {
         functionName: "decimals",
     });
 
-    return (
-        <UnderlyingContext.Provider
-            value={{
+    useEffect(() => {
+        if (!address || !name || !symbol || typeof decimals === "undefined")
+            setUnderlying(undefined);
+        else
+            setUnderlying({
                 address,
                 name,
                 symbol,
                 decimals,
-            }}
-        >
+            });
+    }, [address, name, symbol, decimals]);
+
+    return (
+        <UnderlyingContext.Provider value={underlying}>
             {props.children}
         </UnderlyingContext.Provider>
     );

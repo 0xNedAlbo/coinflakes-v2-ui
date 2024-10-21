@@ -1,4 +1,4 @@
-import Section from "@/components/Section";
+import Section from "@/components/common/Section";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 import { useShareholder } from "@/hooks/managed-vault/useShareholder";
 import { useUnderlying } from "@/hooks/managed-vault/useUnderlying";
@@ -8,14 +8,14 @@ import { Box } from "@mui/material";
 export default function YourAssets() {
     const vault = useManagedVault();
     const underlying = useUnderlying();
-    const { shareValue } = useShareholder();
+    const shareholder = useShareholder();
 
     return (
         <Section heading="Your Share Value">
             <Box>
                 <Box component={"div"} mr={"0.3em"}>
                     {numberFormat(
-                        shareValue,
+                        shareholder?.shareValue,
                         underlying?.symbol,
                         2,
                         underlying?.decimals
@@ -24,7 +24,7 @@ export default function YourAssets() {
                 <Box component={"div"} fontSize="0.8em">
                     (Total Assets:{" "}
                     {numberFormat(
-                        vault.totalAssets,
+                        vault?.totalAssets,
                         underlying?.symbol,
                         2,
                         underlying?.decimals

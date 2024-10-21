@@ -19,22 +19,25 @@ import { useReadContract } from "wagmi";
 export type DepositFormProps = {};
 
 function DepositForm({}: DepositFormProps) {
-    const { address: vaultAddress, symbol: vaultSymbol } = useManagedVault();
-    const { address: underlyingAddress, symbol, decimals } = useUnderlying();
-    const { address: account, underlyingBalance: balance } = useShareholder();
+    const vault = useManagedVault();
+    const underlying = useUnderlying();
+    const shareholder = useShareholder();
 
     const [value, setValue] = useState<bigint>(0n);
     const [allowance, setAllowance] = useState<bigint>(0n);
 
     const { data: allowanceData } = useReadContract({
-        address: underlyingAddress,
+        address: underlying?.address,
         functionName: "allowance",
-        args: [account as EvmAddress, vaultAddress as EvmAddress],
+        args: [
+            shareholder?.address as EvmAddress,
+            vault?.address as EvmAddress,
+        ],
         abi: erc20Abi,
     });
 
     const { data: mintValue } = useReadManagedVaultConvertToShares({
-        address: vaultAddress,
+        address: vault?.address,
         args: [value],
     });
 
@@ -58,58 +61,68 @@ function DepositForm({}: DepositFormProps) {
 
     return (
         <Box mt="1em" textAlign={"left"}>
-            <Grid container spacing={1}>
-                <Grid item xs={12} mb={"1em"} mt={"-0.8em"}>
-                    Assets in Wallet:{" "}
-                    {numberFormat(balance, symbol, 2, decimals)}
-                </Grid>
-                <Grid item xs={6}>
-                    <AssetAmountTextField
-                        label="You pay"
-                        symbol={symbol as string}
-                        decimals={decimals as number}
-                        defaultValue={0n}
-                        maxValue={balance}
-                        onChange={onChangeInputValue}
-                    ></AssetAmountTextField>
-                </Grid>
-                <Grid item xs={2} textAlign={"center"}>
-                    <Button variant="text" disableRipple>
-                        <SwapHorizOutlined></SwapHorizOutlined>
-                    </Button>
-                </Grid>
-                <Grid item xs={4} marginTop={"0.5em"} textAlign={"center"}>
-                    <Typography variant="body1">
-                        {numberFormat(mintValue as bigint, vaultSymbol)}
-                    </Typography>
-                </Grid>
+            {vault && underlying && shareholder && (
+                <Grid container spacing={1}>
+                    <Grid item xs={12} mb={"1em"} mt={"-0.8em"}>
+                        Assets in Wallet:{" "}
+                        {numberFormat(
+                            shareholder.underlyingBalance,
+                            underlying.symbol,
+                            2,
+                            underlying.decimals
+                        )}
+                    </Grid>
+                    <Grid item xs={6}>
+                        <AssetAmountTextField
+                            label="You pay"
+                            symbol={underlying.symbol as string}
+                            decimals={underlying.decimals as number}
+                            defaultValue={0n}
+                            maxValue={shareholder.underlyingBalance}
+                            onChange={onChangeInputValue}
+                        ></AssetAmountTextField>
+                    </Grid>
+                    <Grid item xs={2} textAlign={"center"}>
+                        <Button variant="text" disableRipple>
+                            <SwapHorizOutlined></SwapHorizOutlined>
+                        </Button>
+                    </Grid>
+                    <Grid item xs={4} marginTop={"0.5em"} textAlign={"center"}>
+                        <Typography variant="body1">
+                            {numberFormat(mintValue as bigint, vault.symbol)}
+                        </Typography>
+                    </Grid>
 
-                <Grid item xs={6}>
-                    <Erc20ApproveButton
-                        token={underlyingAddress}
-                        owner={account as EvmAddress}
-                        amountNeeded={value}
-                        spender={vaultAddress}
-                        onAllowanceChange={onAllowanceChange}
-                        disabled={value === 0n || value > (balance as bigint)}
-                    ></Erc20ApproveButton>
+                    <Grid item xs={6}>
+                        <Erc20ApproveButton
+                            token={underlying.address}
+                            allowance={shareholder.underlyingAllowance}
+                            amountNeeded={value}
+                            spender={vault.address}
+                            onAllowanceChange={onAllowanceChange}
+                            disabled={
+                                value === 0n ||
+                                value > shareholder.underlyingBalance
+                            }
+                        ></Erc20ApproveButton>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <SendTxButton
+                            disabled={
+                                value <= 0n ||
+                                value > shareholder.underlyingBalance ||
+                                value > allowance
+                            }
+                            abi={managedVaultAbi}
+                            address={vault.address}
+                            functionName={"deposit"}
+                            args={[value, shareholder.address]}
+                        >
+                            <>Buy Shares</>
+                        </SendTxButton>
+                    </Grid>
                 </Grid>
-                <Grid item xs={6}>
-                    <SendTxButton
-                        disabled={
-                            value <= 0n ||
-                            value > (balance as bigint) ||
-                            value > allowance
-                        }
-                        abi={managedVaultAbi}
-                        address={vaultAddress as EvmAddress}
-                        functionName={"deposit"}
-                        args={[value, account]}
-                    >
-                        <>Buy Shares</>
-                    </SendTxButton>
-                </Grid>
-            </Grid>
+            )}
         </Box>
     );
 }

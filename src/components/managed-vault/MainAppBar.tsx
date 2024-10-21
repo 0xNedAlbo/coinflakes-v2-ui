@@ -2,9 +2,10 @@ import { Grid, IconButton, Typography } from "@mui/material";
 import { ConnectKitButton } from "connectkit";
 import { useContext } from "react";
 import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
-import { ColorModeContext } from "../ColorModeContext";
+
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 import SwitchChainMenu from "../inputs/SwitchChainMenu";
+import { ColorModeContext } from "@/components/common/ColorModeContext";
 
 export default function MainAppBar() {
     const vault = useManagedVault();

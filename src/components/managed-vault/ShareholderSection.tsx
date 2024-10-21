@@ -4,7 +4,8 @@ import SellShares from "./ShareholderSection/SellShares";
 import { useShareholder } from "@/hooks/managed-vault/useShareholder";
 
 function ShareholderSection() {
-    const { isShareholder } = useShareholder();
+    const shareholder = useShareholder();
+    const isShareholder = shareholder?.isShareholder;
     if (!isShareholder) return <></>;
     return (
         <Grid container mt={"4em"} mb={"12em"}>

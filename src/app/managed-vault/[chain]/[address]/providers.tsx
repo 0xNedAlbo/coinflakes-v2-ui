@@ -7,13 +7,10 @@ import { ConnectKitProvider } from "connectkit";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { PaletteMode } from "@mui/material";
-import { ColorModeContext } from "@/components/ColorModeContext";
+import { ColorModeContext } from "@/components/common/ColorModeContext";
 
 import { useCookies } from "react-cookie";
-import {
-    ManagedVaultContext,
-    ManagedVaultProvider,
-} from "@/hooks/managed-vault/useManagedVault";
+import { ManagedVaultProvider } from "@/hooks/managed-vault/useManagedVault";
 import { getConfig } from "@/wagmiConfig";
 import { useParams } from "next/navigation";
 import EvmAddress from "@/utils/evmAddress";

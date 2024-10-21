@@ -8,10 +8,13 @@ import { ConnectKitProvider } from "connectkit";
 import { getConfig } from "@/wagmiConfig";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { PaletteMode } from "@mui/material";
-import { ColorModeContext } from "@/components/ColorModeContext";
+import { ColorModeContext } from "@/components/common/ColorModeContext";
 
 import { useCookies } from "react-cookie";
-import { useParams, usePathname, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
+import { VaultProvider } from "@/hooks/v2/useVault";
+import { UnderlyingProvider } from "@/hooks/v2/useUnderlying";
+import { ShareholderProvider } from "@/hooks/v2/useShareholder";
 
 export function Providers(props: {
     children: ReactNode;
@@ -64,7 +67,13 @@ export function Providers(props: {
                         <ConnectKitProvider
                             theme={mode == "light" ? "soft" : "midnight"}
                         >
-                            {props.children}
+                            <VaultProvider>
+                                <UnderlyingProvider>
+                                    <ShareholderProvider>
+                                        {props.children}
+                                    </ShareholderProvider>
+                                </UnderlyingProvider>
+                            </VaultProvider>
                         </ConnectKitProvider>
                     </QueryClientProvider>
                 </WagmiProvider>

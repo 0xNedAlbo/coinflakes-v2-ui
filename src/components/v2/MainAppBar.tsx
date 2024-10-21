@@ -1,9 +1,9 @@
-import { useVault } from "@/hooks/useVault";
+import { useVault } from "@/hooks/v2/useVault";
+import { ColorModeContext } from "@/components/common/ColorModeContext";
 import { Grid, IconButton, Typography } from "@mui/material";
 import { ConnectKitButton } from "connectkit";
 import { useContext } from "react";
 import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
-import { ColorModeContext } from "./ColorModeContext";
 
 export default function MainAppBar() {
     const vault = useVault();

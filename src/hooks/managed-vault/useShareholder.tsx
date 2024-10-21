@@ -15,22 +15,25 @@ import {
     useReadManagedVaultManager,
     useReadManagedVaultMaxRedeem,
     useWatchManagedVaultDepositEvent,
+    useWatchManagedVaultEvent,
     useWatchManagedVaultWithdrawEvent,
 } from "@/generated/wagmi";
 import { useAccount, useReadContract, useWatchContractEvent } from "wagmi";
 import { erc20Abi } from "viem";
 
-export type ShareholderType = {
-    address?: EvmAddress;
-    isShareholder?: Boolean;
-    isManager?: Boolean;
-    shares?: bigint;
-    underlyingBalance?: bigint;
-    shareValue?: bigint;
-    maxRedeem?: bigint;
+export type Shareholder = {
+    address: EvmAddress;
+    isShareholder: Boolean;
+    isManager: Boolean;
+    shares: bigint;
+    underlyingBalance: bigint;
+    underlyingAllowance: bigint;
+    shareValue: bigint;
+    maxRedeem: bigint;
 };
+export type UseShareholderReturnType = Shareholder | undefined;
 
-const ShareholderContext = createContext<ShareholderType>({});
+const ShareholderContext = createContext<UseShareholderReturnType>(undefined);
 
 export function useShareholder() {
     const shareholder = useContext(ShareholderContext);
@@ -38,10 +41,14 @@ export function useShareholder() {
 }
 
 export function ShareholderProvider(props: { children: ReactNode }): ReactNode {
-    const { address: vaultAddress, sharePrice } = useManagedVault();
-    const { address: underlyingAddress } = useUnderlying();
+    const [shareholder, setShareholder] = useState<UseShareholderReturnType>();
+    const vault = useManagedVault();
+    const underlying = useUnderlying();
     const { address: account } = useAccount();
-    console.log("Shareholder Provider");
+
+    const vaultAddress = vault?.address;
+    const sharePrice = vault?.sharePrice;
+    const underlyingAddress = underlying?.address;
 
     const { data: shares, refetch: refetchVaultBalance } =
         useReadManagedVaultBalanceOf({
@@ -55,6 +62,14 @@ export function ShareholderProvider(props: { children: ReactNode }): ReactNode {
             functionName: "balanceOf",
             args: [account as EvmAddress],
             abi: erc20Abi,
+        });
+
+    const { data: underlyingAllowance, refetch: refetchUnderlyingAllowance } =
+        useReadContract({
+            address: underlyingAddress,
+            abi: erc20Abi,
+            functionName: "allowance",
+            args: [account as EvmAddress, vault?.address as EvmAddress],
         });
 
     const { data: shareValue, refetch: refetchShareValue } =
@@ -78,27 +93,19 @@ export function ShareholderProvider(props: { children: ReactNode }): ReactNode {
             args: [account as EvmAddress],
         });
 
-    useWatchManagedVaultDepositEvent({
+    useWatchManagedVaultEvent({
         address: vaultAddress,
         onLogs: (logs) => {
             logs.forEach((logEvent) => {
-                const { owner } = logEvent.args as { owner: EvmAddress };
-                if (owner === account) {
-                    refetchVaultBalance();
-                    refetchMaxRedeem();
-                }
-            });
-        },
-    });
-
-    useWatchManagedVaultWithdrawEvent({
-        address: vaultAddress,
-        onLogs: (logs) => {
-            logs.forEach((logEvent) => {
-                const { owner } = logEvent.args as { owner: EvmAddress };
-                if (owner === account) {
-                    refetchVaultBalance();
-                    refetchMaxRedeem();
+                if (
+                    logEvent.eventName === "Deposit" ||
+                    logEvent.eventName === "Withdraw"
+                ) {
+                    const { owner } = logEvent.args as { owner: EvmAddress };
+                    if (owner === account) {
+                        refetchVaultBalance();
+                        refetchMaxRedeem();
+                    }
                 }
             });
         },
@@ -113,29 +120,73 @@ export function ShareholderProvider(props: { children: ReactNode }): ReactNode {
                     from: EvmAddress;
                     to: EvmAddress;
                 };
-                if (from === account || to == account)
+                if (from === account || to == account) {
                     refetchUnderlyingBalance();
+                    if (from == vault?.address || to == vault?.address)
+                        refetchUnderlyingAllowance();
+                }
             });
         },
         abi: erc20Abi,
     });
 
+    useWatchContractEvent({
+        address: underlyingAddress,
+        abi: erc20Abi,
+        eventName: "Approval",
+        onLogs: (logs) => {
+            logs.forEach((logEvent) => {
+                if (
+                    logEvent.args.owner == account &&
+                    logEvent.args.spender == vault?.address
+                ) {
+                    refetchUnderlyingAllowance();
+                }
+            });
+        },
+    });
+
     useEffect(() => {
         refetchShareValue();
+        refetchVaultBalance();
     }, [sharePrice, shares]);
 
-    return (
-        <ShareholderContext.Provider
-            value={{
+    useEffect(() => {
+        if (
+            !account ||
+            !manager ||
+            typeof underlyingBalance === "undefined" ||
+            typeof underlyingAllowance === "undefined" ||
+            typeof shares === "undefined" ||
+            typeof shareValue === "undefined" ||
+            typeof maxRedeem === "undefined" ||
+            typeof isShareholder === "undefined"
+        )
+            setShareholder(undefined);
+        else
+            setShareholder({
                 address: account,
                 underlyingBalance,
+                underlyingAllowance,
                 shares,
                 isShareholder,
                 isManager: manager == account,
                 shareValue,
                 maxRedeem,
-            }}
-        >
+            });
+    }, [
+        account,
+        underlyingBalance,
+        underlyingAllowance,
+        shares,
+        isShareholder,
+        manager,
+        shareValue,
+        maxRedeem,
+    ]);
+
+    return (
+        <ShareholderContext.Provider value={shareholder}>
             {props.children}
         </ShareholderContext.Provider>
     );

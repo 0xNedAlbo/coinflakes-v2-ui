@@ -2,13 +2,7 @@ import { Grid } from "@mui/material";
 import CurrentSharePrice from "./VaultSummary/CurrentSharePrice";
 import ShareholderAssets from "./VaultSummary/ShareholderAssets";
 import ShareholderShares from "./VaultSummary/ShareholderShares";
-/*
-import AssetsUnderManagement from './VaultSummary/AssetsUnderManagement';
 
-import VaultTotalSupply from './VaultSummary/VaultTotalSupply';
-import YourAssets from './VaultSummary/YourAssets';
-import YourShares from './VaultSummary/YourShares';
-*/
 export default function VaultSummary() {
     return (
         <Grid container mt={"4em"}>

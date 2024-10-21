@@ -4,7 +4,7 @@ import React, { ReactElement, useEffect, useState } from "react";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { Abi } from "viem";
 import EvmAddress from "@/utils/evmAddress";
-import TransactionDialog from "../TransactionDialog";
+import TransactionDialog from "../common/TransactionDialog";
 
 export type SendTxButtonProps = {
     disabled?: boolean;

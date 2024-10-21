@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 import EvmAddress from "@/utils/evmAddress";
 
@@ -6,23 +6,24 @@ import {
     managedVaultAbi,
     useReadManagedVaultConvertToAssets,
 } from "@/generated/wagmi";
-import { isAddress } from "viem";
 import { BN_1E } from "@/utils/constants";
 import { useReadContracts, useWatchContractEvent } from "wagmi";
 
-export type ManagedVaultType = {
-    address?: EvmAddress;
-    name?: string;
-    symbol?: string;
-    decimals?: number;
-    totalAssets?: bigint;
-    totalSupply?: bigint;
-    assetsInUse?: bigint;
-    sharePrice?: bigint;
-    manager?: EvmAddress;
+export type ManagedVault = {
+    address: EvmAddress;
+    name: string;
+    symbol: string;
+    decimals: number;
+    totalAssets: bigint;
+    totalSupply: bigint;
+    assetsInUse: bigint;
+    sharePrice: bigint;
+    manager: EvmAddress;
 };
 
-export const ManagedVaultContext = createContext<ManagedVaultType>({});
+export type UseManagedVaultReturnType = ManagedVault | undefined;
+export const ManagedVaultContext =
+    createContext<UseManagedVaultReturnType>(undefined);
 
 export function useManagedVault() {
     const vault = useContext(ManagedVaultContext);
@@ -33,18 +34,8 @@ export function ManagedVaultProvider(props: {
     children: React.ReactNode;
     address: EvmAddress;
 }): React.ReactNode {
-    const address = useContext(ManagedVaultContext);
+    const [vault, setVault] = useState<UseManagedVaultReturnType>();
 
-    if (!props.address) {
-        throw new Error(
-            "useManageVault must be used within ManagedVaultContext"
-        );
-    }
-
-    if (!isAddress(props.address as string)) {
-        throw new Error("vault address is not an EVM address");
-    }
-    console.log("Managed Vault Provider");
     const [name, setName] = useState<string>();
     const [symbol, setSymbol] = useState<string>();
     const [decimals, setDecimals] = useState<number>();
@@ -137,62 +128,21 @@ export function ManagedVaultProvider(props: {
         },
     });
 
-    /*     useWatchManagedVaultDepositEvent({
-        address,
-        onLogs: () => {
-            refetchTokennomics();
-        },
-    });
-
-    useWatchManagedVaultWithdrawEvent({
-        address,
-        onLogs: () => {
-            refetchTokennomics();
-        },
-    });
-
-    useWatchManagedVaultUseAssetsEvent({
-        address,
-        onLogs: () => {
-            refetchTokennomics();
-        },
-    });
-
-    useWatchManagedVaultReturnAssetsEvent({
-        address,
-        onLogs: () => {
-            refetchTokennomics();
-            refetchSharePrice();
-        },
-    });
-
-    useWatchManagedVaultGainsEvent({
-        address,
-        onLogs: () => {
-            refetchTokennomics();
-            refetchSharePrice();
-        },
-    });
-
-    useWatchManagedVaultLossEvent({
-        address,
-        onLogs: () => {
-            refetchTokennomics();
-            refetchSharePrice();
-        },
-    });
-
-    useWatchManagedVaultFeesEvent({
-        address,
-        onLogs: () => {
-            refetchTokennomics();
-            refetchSharePrice();
-        },
-    });
- */
-    return (
-        <ManagedVaultContext.Provider
-            value={{
+    useEffect(() => {
+        if (
+            !props.address ||
+            !manager ||
+            !name ||
+            !symbol ||
+            typeof decimals === "undefined" ||
+            typeof totalAssets === "undefined" ||
+            typeof assetsInUse === "undefined" ||
+            typeof totalSupply === "undefined" ||
+            typeof sharePrice === "undefined"
+        )
+            setVault(undefined);
+        else
+            setVault({
                 address: props.address,
                 name,
                 symbol,
@@ -202,8 +152,21 @@ export function ManagedVaultProvider(props: {
                 totalSupply,
                 sharePrice,
                 manager,
-            }}
-        >
+            });
+    }, [
+        props.address,
+        name,
+        symbol,
+        decimals,
+        totalAssets,
+        assetsInUse,
+        totalSupply,
+        sharePrice,
+        manager,
+    ]);
+
+    return (
+        <ManagedVaultContext.Provider value={vault}>
             {props.children}
         </ManagedVaultContext.Provider>
     );

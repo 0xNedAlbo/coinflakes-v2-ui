@@ -1,8 +1,4 @@
-import {
-    CheckOutlined,
-    ErrorOutlined,
-    RestaurantMenu,
-} from "@mui/icons-material";
+import { CheckOutlined, ErrorOutlined } from "@mui/icons-material";
 import { Button, CircularProgress } from "@mui/material";
 import { erc20Abi } from "viem";
 import { useCallback, useEffect, useState } from "react";
@@ -14,14 +10,13 @@ import {
 } from "wagmi";
 import { BN_ZERO } from "@/utils/constants";
 import EvmAddress from "@/utils/evmAddress";
-import { eventNames } from "process";
-import TransactionDialog from "../TransactionDialog";
+import TransactionDialog from "../common/TransactionDialog";
 
 export type Erc20ApproveButtonProps = {
+    allowance: bigint;
     amountNeeded: bigint;
-    token?: EvmAddress;
-    owner?: EvmAddress;
-    spender?: EvmAddress;
+    token: EvmAddress;
+    spender: EvmAddress;
     disabled?: boolean;
     label?: string;
     successLabel?: string;
@@ -33,25 +28,17 @@ export type Erc20ApproveButtonRef = {
 };
 
 function Erc20ApproveButton({
+    allowance,
     label,
     disabled,
     successLabel,
     token,
-    owner,
     spender,
     amountNeeded,
     onAllowanceChange,
 }: Erc20ApproveButtonProps) {
     label = label || "Approve";
     successLabel = successLabel || "Approved";
-    const [allowance, setAllowance] = useState(0n);
-
-    const { data: initialAllowance } = useReadContract({
-        address: token,
-        abi: erc20Abi,
-        functionName: "allowance",
-        args: [owner as EvmAddress, spender as EvmAddress],
-    });
 
     const {
         writeContract: sendTx,
@@ -74,50 +61,12 @@ function Erc20ApproveButton({
             confirmations: 1,
         });
 
-    useWatchContractEvent({
-        address: token,
-        abi: erc20Abi,
-        eventName: "Approval",
-        onLogs: (logs) => {
-            if (!token) return;
-            if (!owner) return;
-            if (!spender) return;
-            if (!logs.length) return;
-            logs.forEach((logEvent) => {
-                if (
-                    logEvent.args.spender == spender ||
-                    logEvent.args.owner == owner
-                )
-                    if (logEvent.args.value !== undefined)
-                        setAllowance(logEvent.args.value);
-            });
-        },
-    });
-
-    useWatchContractEvent({
-        address: token,
-        abi: erc20Abi,
-        eventName: "Transfer",
-        onLogs: (logs) => {
-            if (!owner) return;
-            logs.forEach((logEvent) => {
-                if (
-                    logEvent.args.from == owner &&
-                    logEvent.args.value !== undefined
-                )
-                    setAllowance(allowance - logEvent.args.value);
-            });
-        },
-    });
-
     useEffect(() => {
-        if (initialAllowance !== undefined) setAllowance(initialAllowance);
-    }, [initialAllowance]);
-
-    useEffect(() => {
-        onAllowanceChange?.(allowance);
-        resetTx?.();
-    }, [allowance]);
+        if (isSuccess) {
+            onAllowanceChange?.(amountNeeded);
+            resetTx?.();
+        }
+    }, [isSuccess]);
 
     useEffect(() => {
         resetTx?.();

@@ -1,10 +1,9 @@
 "use client";
 
 import { RequiredChainPrompt } from "@/components/inputs/RequiredChainPrompt";
-import MainAppBar from "@/components/MainAppBar";
-import MigrationSection from "@/components/MigrationSection";
-import ShareholderSection from "@/components/ShareholderSection";
-import VaultSummary from "@/components/VaultSummary";
+import MainAppBar from "@/components/v2/MainAppBar";
+import ShareholderSection from "@/components/v2/ShareholderSection";
+import VaultSummary from "@/components/v2/VaultSummary";
 import { CssBaseline } from "@mui/material";
 
 function App() {
@@ -14,7 +13,6 @@ function App() {
             <MainAppBar></MainAppBar>
             <RequiredChainPrompt></RequiredChainPrompt>
             <VaultSummary></VaultSummary>
-            <MigrationSection></MigrationSection>
             <ShareholderSection></ShareholderSection>
         </>
     );

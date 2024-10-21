@@ -1,19 +1,27 @@
 import EvmAddress from "@/utils/evmAddress";
-import { createContext, ReactNode, useContext } from "react";
+import {
+    createContext,
+    ReactNode,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
 import { useManagedVault } from "./useManagedVault";
 import { useUnderlying } from "./useUnderlying";
 import { useReadManagedVaultManager } from "@/generated/wagmi";
 import { useAccount, useReadContract, useWatchContractEvent } from "wagmi";
 import { erc20Abi } from "viem";
 
-export type ManagerType = {
+export type Manager = {
     address?: EvmAddress;
     balance?: bigint;
     withdrawableAssets?: bigint;
     isAccount?: Boolean;
 };
 
-const ManagerContext = createContext<ManagerType>({});
+export type UseManagerReturnType = Manager | undefined;
+
+const ManagerContext = createContext<UseManagerReturnType>({});
 
 export function useManager() {
     const manager = useContext(ManagerContext);
@@ -21,9 +29,15 @@ export function useManager() {
 }
 
 export function ManagerProvider(props: { children: ReactNode }): ReactNode {
-    const { address: vaultAddress } = useManagedVault();
-    const { address: underlyingAddress } = useUnderlying();
+    const [manager, setManager] = useState<UseManagerReturnType>();
+
+    const vault = useManagedVault();
+    const underlying = useUnderlying();
+
     const { address: account } = useAccount();
+
+    const vaultAddress = vault?.address;
+    const underlyingAddress = underlying?.address;
 
     const { data: managerAddress } = useReadManagedVaultManager({
         address: vaultAddress,
@@ -76,15 +90,25 @@ export function ManagerProvider(props: { children: ReactNode }): ReactNode {
         abi: erc20Abi,
     });
 
-    return (
-        <ManagerContext.Provider
-            value={{
+    useEffect(() => {
+        if (
+            !managerAddress ||
+            !account ||
+            typeof balance === "undefined" ||
+            typeof withdrawableAssets === "undefined"
+        )
+            setManager(undefined);
+        else
+            setManager({
                 address: managerAddress,
                 balance,
                 isAccount: Boolean(managerAddress == account),
                 withdrawableAssets,
-            }}
-        >
+            });
+    }, [managerAddress, balance, account, withdrawableAssets]);
+
+    return (
+        <ManagerContext.Provider value={manager}>
             {props.children}
         </ManagerContext.Provider>
     );

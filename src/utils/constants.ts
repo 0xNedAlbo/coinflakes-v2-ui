@@ -14,3 +14,10 @@ export const CHAIN_SLUGS = {
     arbitrum: 42161,
     localhost: 1337,
 } as { [key: string]: number };
+
+export function isPresent(...values: any[]): boolean {
+    for (let i = 0; i < values.length; i++) {
+        if (values[i] === undefined) return false;
+    }
+    return true;
+}

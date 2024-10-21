@@ -1,4 +1,4 @@
-import Section from "@/components/Section";
+import Section from "@/components/common/Section";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 import { numberFormat } from "@/utils/formats";
 
@@ -6,7 +6,12 @@ export default function VaultTotalSupply() {
     const vault = useManagedVault();
     return (
         <Section heading="Total Shares">
-            {numberFormat(vault.totalSupply, vault.symbol, 2, vault.decimals)}
+            {numberFormat(
+                vault?.totalSupply,
+                vault?.symbol,
+                2,
+                vault?.decimals
+            )}
         </Section>
     );
 }

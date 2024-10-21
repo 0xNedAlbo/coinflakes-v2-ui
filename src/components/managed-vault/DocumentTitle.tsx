@@ -1,6 +1,6 @@
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 
 export function DocumentTitle() {
-    const { name } = useManagedVault();
-    return <title>{name}</title>;
+    const vault = useManagedVault();
+    return <title>{vault?.name}</title>;
 }

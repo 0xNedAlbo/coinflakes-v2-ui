@@ -16,15 +16,14 @@ import { useCallback, useState } from "react";
 export type DepositFormProps = {};
 
 function RedeemForm({}: DepositFormProps) {
-    const { address: vaultAddress, symbol, decimals } = useManagedVault();
-    const { symbol: underlyingSymbol, decimals: underlyingDecimals } =
-        useUnderlying();
-    const { address: account, maxRedeem } = useShareholder();
+    const vault = useManagedVault();
+    const underlying = useUnderlying();
+    const shareholder = useShareholder();
 
     const [value, setValue] = useState<bigint>(0n);
 
     const { data: withdrawValue } = useReadManagedVaultConvertToAssets({
-        address: vaultAddress,
+        address: vault?.address,
         args: [value],
     });
 
@@ -39,50 +38,64 @@ function RedeemForm({}: DepositFormProps) {
 
     return (
         <Box mt="1em" textAlign={"left"}>
-            <Grid container spacing={1}>
-                <Grid item xs={12} mb={"1em"} mt={"-0.8em"}>
-                    Max. Sell Amount:{" "}
-                    {numberFormat(maxRedeem, symbol, 2, decimals)}
-                </Grid>
-                <Grid item xs={6}>
-                    <AssetAmountTextField
-                        label="You sell"
-                        symbol={symbol as string}
-                        decimals={decimals as number}
-                        defaultValue={0n}
-                        maxValue={maxRedeem}
-                        onChange={onChangeInputValue}
-                    ></AssetAmountTextField>
-                </Grid>
-                <Grid item xs={2} textAlign={"center"}>
-                    <Button variant="text" disableRipple>
-                        <SwapHorizOutlined></SwapHorizOutlined>
-                    </Button>
-                </Grid>
-                <Grid item xs={4} marginTop={"0.5em"} textAlign={"center"}>
-                    <Typography variant="body1">
+            {vault && underlying && shareholder && (
+                <Grid container spacing={1}>
+                    <Grid item xs={12} mb={"1em"} mt={"-0.8em"}>
+                        Max. Sell Amount:{" "}
                         {numberFormat(
-                            withdrawValue as bigint,
-                            underlyingSymbol,
+                            shareholder.maxRedeem,
+                            vault.symbol,
                             2,
-                            underlyingDecimals
+                            vault.decimals
                         )}
-                    </Typography>
-                </Grid>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <AssetAmountTextField
+                            label="You sell"
+                            symbol={vault.symbol as string}
+                            decimals={vault.decimals as number}
+                            defaultValue={0n}
+                            maxValue={shareholder.maxRedeem}
+                            onChange={onChangeInputValue}
+                        ></AssetAmountTextField>
+                    </Grid>
+                    <Grid item xs={2} textAlign={"center"}>
+                        <Button variant="text" disableRipple>
+                            <SwapHorizOutlined></SwapHorizOutlined>
+                        </Button>
+                    </Grid>
+                    <Grid item xs={4} marginTop={"0.5em"} textAlign={"center"}>
+                        <Typography variant="body1">
+                            {numberFormat(
+                                withdrawValue as bigint,
+                                underlying.symbol,
+                                2,
+                                underlying.decimals
+                            )}
+                        </Typography>
+                    </Grid>
 
-                <Grid item xs={6}></Grid>
-                <Grid item xs={6}>
-                    <SendTxButton
-                        disabled={value <= 0n || value > (maxRedeem as bigint)}
-                        abi={managedVaultAbi}
-                        address={vaultAddress as EvmAddress}
-                        functionName={"redeem"}
-                        args={[value, account, account]}
-                    >
-                        <>Sell Shares</>
-                    </SendTxButton>
+                    <Grid item xs={6}></Grid>
+                    <Grid item xs={6}>
+                        <SendTxButton
+                            disabled={
+                                value <= 0n ||
+                                value > (shareholder.maxRedeem as bigint)
+                            }
+                            abi={managedVaultAbi}
+                            address={vault.address as EvmAddress}
+                            functionName={"redeem"}
+                            args={[
+                                value,
+                                shareholder.address,
+                                shareholder.address,
+                            ]}
+                        >
+                            <>Sell Shares</>
+                        </SendTxButton>
+                    </Grid>
                 </Grid>
-            </Grid>
+            )}
         </Box>
     );
 }

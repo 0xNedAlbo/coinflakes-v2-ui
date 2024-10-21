@@ -1,5 +1,5 @@
 import DepositForm from "./DepositForm";
-import Section from "../Section";
+import Section from "../../common/Section";
 
 function BuyShares() {
     return (

@@ -4,9 +4,12 @@ import WithdrawAssets from "./ManagerSection/WithdrawAssets";
 import ReturnAssets from "./ManagerSection/ReturnAssets";
 import SharePriceManagement from "./ManagerSection/SharePriceManagement";
 import { useShareholder } from "@/hooks/managed-vault/useShareholder";
+import { useManager } from "@/hooks/managed-vault/useManager";
 
 export default function ManagerSection() {
-    const { isManager } = useShareholder();
+    const manager = useManager();
+    const isManager = manager?.isAccount;
+
     if (!isManager) return <></>;
     return (
         <Grid container mt={"4em"} mb={"18em"}>
