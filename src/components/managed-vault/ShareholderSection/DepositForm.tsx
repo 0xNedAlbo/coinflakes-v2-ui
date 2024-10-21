@@ -1,20 +1,15 @@
 import AssetAmountTextField from "@/components/inputs/AssetAmountTextField";
 import Erc20ApproveButton from "@/components/inputs/Erc20ApproveButton";
 import SendTxButton from "@/components/inputs/SendTxButton";
-import {
-    managedVaultAbi,
-    useReadManagedVaultConvertToShares,
-} from "@/generated/wagmi";
+import { managedVaultAbi } from "@/generated/wagmi";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 import { useShareholder } from "@/hooks/managed-vault/useShareholder";
 import { useUnderlying } from "@/hooks/managed-vault/useUnderlying";
-import EvmAddress from "@/utils/evmAddress";
+import { BN_1E } from "@/utils/constants";
 import { numberFormat } from "@/utils/formats";
 import { SwapHorizOutlined } from "@mui/icons-material";
 import { Box, Button, Grid, Typography } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
-import { erc20Abi } from "viem";
-import { useReadContract } from "wagmi";
+import { useCallback, useState } from "react";
 
 export type DepositFormProps = {};
 
@@ -24,27 +19,11 @@ function DepositForm({}: DepositFormProps) {
     const shareholder = useShareholder();
 
     const [value, setValue] = useState<bigint>(0n);
-    const [allowance, setAllowance] = useState<bigint>(0n);
 
-    const { data: allowanceData } = useReadContract({
-        address: underlying?.address,
-        functionName: "allowance",
-        args: [
-            shareholder?.address as EvmAddress,
-            vault?.address as EvmAddress,
-        ],
-        abi: erc20Abi,
-    });
-
-    const { data: mintValue } = useReadManagedVaultConvertToShares({
-        address: vault?.address,
-        args: [value],
-    });
-
-    useEffect(() => {
-        if (!allowanceData) setAllowance(0n);
-        else setAllowance(allowanceData as bigint);
-    }, [allowanceData]);
+    const mintValue =
+        underlying && vault && vault.sharePrice
+            ? (value * BN_1E(vault.decimals)) / vault.sharePrice
+            : 0n;
 
     const onChangeInputValue = useCallback(
         (newValue: bigint | null) => {
@@ -54,10 +33,6 @@ function DepositForm({}: DepositFormProps) {
         },
         [value]
     );
-
-    const onAllowanceChange = (newAllowance: bigint) => {
-        setAllowance(newAllowance);
-    };
 
     return (
         <Box mt="1em" textAlign={"left"}>
@@ -99,7 +74,6 @@ function DepositForm({}: DepositFormProps) {
                             allowance={shareholder.underlyingAllowance}
                             amountNeeded={value}
                             spender={vault.address}
-                            onAllowanceChange={onAllowanceChange}
                             disabled={
                                 value === 0n ||
                                 value > shareholder.underlyingBalance
@@ -111,7 +85,7 @@ function DepositForm({}: DepositFormProps) {
                             disabled={
                                 value <= 0n ||
                                 value > shareholder.underlyingBalance ||
-                                value > allowance
+                                value > shareholder.underlyingAllowance
                             }
                             abi={managedVaultAbi}
                             address={vault.address}

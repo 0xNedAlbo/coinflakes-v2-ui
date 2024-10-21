@@ -35,7 +35,6 @@ export function ManagedVaultProvider(props: {
     address: EvmAddress;
 }): React.ReactNode {
     const [vault, setVault] = useState<UseManagedVaultReturnType>();
-
     const [name, setName] = useState<string>();
     const [symbol, setSymbol] = useState<string>();
     const [decimals, setDecimals] = useState<number>();
@@ -121,7 +120,6 @@ export function ManagedVaultProvider(props: {
                     triggerRefetch = true;
             });
             if (triggerRefetch) {
-                console.log("Refetch");
                 refetchTokennomics();
                 refetchSharePrice();
             }
@@ -141,7 +139,7 @@ export function ManagedVaultProvider(props: {
             typeof sharePrice === "undefined"
         )
             setVault(undefined);
-        else
+        else {
             setVault({
                 address: props.address,
                 name,
@@ -153,6 +151,7 @@ export function ManagedVaultProvider(props: {
                 sharePrice,
                 manager,
             });
+        }
     }, [
         props.address,
         name,

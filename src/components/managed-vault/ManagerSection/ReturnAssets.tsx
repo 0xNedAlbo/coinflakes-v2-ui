@@ -9,9 +9,7 @@ import { useUnderlying } from "@/hooks/managed-vault/useUnderlying";
 import EvmAddress from "@/utils/evmAddress";
 import { numberFormat } from "@/utils/formats";
 import { Box, Grid } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
-import { erc20Abi } from "viem";
-import { useReadContract } from "wagmi";
+import { useCallback, useState } from "react";
 
 function ReturnAssets() {
     const vault = useManagedVault();
@@ -19,22 +17,6 @@ function ReturnAssets() {
     const shareholder = useShareholder();
 
     const [value, setValue] = useState<bigint>(0n);
-    const [allowance, setAllowance] = useState<bigint>(0n);
-
-    const { data: allowanceData } = useReadContract({
-        address: underlying?.address,
-        functionName: "allowance",
-        args: [
-            shareholder?.address as EvmAddress,
-            vault?.address as EvmAddress,
-        ],
-        abi: erc20Abi,
-    });
-
-    useEffect(() => {
-        if (!allowanceData) setAllowance(0n);
-        else setAllowance(allowanceData as bigint);
-    }, [allowanceData]);
 
     const onChangeInputValue = useCallback(
         (newValue: bigint | null) => {
@@ -44,10 +26,6 @@ function ReturnAssets() {
         },
         [value]
     );
-
-    const onAllowanceChange = (newAllowance: bigint) => {
-        setAllowance(newAllowance);
-    };
 
     return (
         <Section heading="Return Funds to Vault" headingAlign="center">
@@ -86,7 +64,6 @@ function ReturnAssets() {
                                 token={underlying.address}
                                 amountNeeded={value}
                                 spender={vault.address}
-                                onAllowanceChange={onAllowanceChange}
                                 disabled={
                                     value === 0n ||
                                     value >
@@ -99,7 +76,7 @@ function ReturnAssets() {
                                 disabled={
                                     value <= 0n ||
                                     value > shareholder.underlyingBalance ||
-                                    value > allowance
+                                    value > shareholder.underlyingAllowance
                                 }
                                 abi={managedVaultAbi}
                                 address={vault.address as EvmAddress}

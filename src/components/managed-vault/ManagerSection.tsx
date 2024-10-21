@@ -3,7 +3,6 @@ import ShareholderManagement from "./ManagerSection/ShareholderManagement";
 import WithdrawAssets from "./ManagerSection/WithdrawAssets";
 import ReturnAssets from "./ManagerSection/ReturnAssets";
 import SharePriceManagement from "./ManagerSection/SharePriceManagement";
-import { useShareholder } from "@/hooks/managed-vault/useShareholder";
 import { useManager } from "@/hooks/managed-vault/useManager";
 
 export default function ManagerSection() {

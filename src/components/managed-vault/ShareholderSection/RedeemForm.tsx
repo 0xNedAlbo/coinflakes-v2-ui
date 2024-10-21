@@ -1,12 +1,10 @@
 import AssetAmountTextField from "@/components/inputs/AssetAmountTextField";
 import SendTxButton from "@/components/inputs/SendTxButton";
-import {
-    managedVaultAbi,
-    useReadManagedVaultConvertToAssets,
-} from "@/generated/wagmi";
+import { managedVaultAbi } from "@/generated/wagmi";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 import { useShareholder } from "@/hooks/managed-vault/useShareholder";
 import { useUnderlying } from "@/hooks/managed-vault/useUnderlying";
+import { BN_1E } from "@/utils/constants";
 import EvmAddress from "@/utils/evmAddress";
 import { numberFormat } from "@/utils/formats";
 import { SwapHorizOutlined } from "@mui/icons-material";
@@ -21,11 +19,9 @@ function RedeemForm({}: DepositFormProps) {
     const shareholder = useShareholder();
 
     const [value, setValue] = useState<bigint>(0n);
-
-    const { data: withdrawValue } = useReadManagedVaultConvertToAssets({
-        address: vault?.address,
-        args: [value],
-    });
+    const withdrawValue = vault
+        ? (vault.sharePrice * value) / BN_1E(vault.decimals)
+        : 0n;
 
     const onChangeInputValue = useCallback(
         (newValue: bigint | null) => {
