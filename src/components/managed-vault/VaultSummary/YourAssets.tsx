@@ -1,11 +1,11 @@
-import Section from "@/components/common/Section";
+import { Section } from "@/components/common/Section";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 import { useShareholder } from "@/hooks/managed-vault/useShareholder";
 import { useUnderlying } from "@/hooks/managed-vault/useUnderlying";
 import { numberFormat } from "@/utils/formats";
 import { Box } from "@mui/material";
 
-export default function YourAssets() {
+export function YourAssets() {
     const vault = useManagedVault();
     const underlying = useUnderlying();
     const shareholder = useShareholder();

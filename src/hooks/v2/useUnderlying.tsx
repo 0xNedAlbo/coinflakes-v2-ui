@@ -6,14 +6,13 @@ import {
     useState,
 } from "react";
 
-import EvmAddress from "@/utils/evmAddress";
-
 import {
     daiAddress,
     useReadDaiDecimals,
     useReadDaiName,
     useReadDaiSymbol,
 } from "@/generated/wagmi";
+import { EvmAddress } from "@/utils/evmAddress";
 
 export type Underlying = {
     address: EvmAddress;

@@ -4,15 +4,15 @@ import { useAccount } from "wagmi";
 import { BN_ZERO } from "@/utils/constants";
 import { numberFormat } from "@/utils/formats";
 import { useVault } from "@/hooks/v2/useVault";
-import AssetAmountTextField from "@/components/inputs/AssetAmountTextField";
-import Erc20ApproveButton from "@/components/inputs/Erc20ApproveButton";
-import SendTxButton from "@/components/inputs/SendTxButton";
 import { useUnderlying } from "@/hooks/v2/useUnderlying";
-import EvmAddress from "@/utils/evmAddress";
 import { erc4626Abi } from "viem";
 import { useShareholder } from "@/hooks/v2/useShareholder";
+import { AssetAmountTextField } from "@/components/inputs/AssetAmountTextField";
+import { Erc20ApproveButton } from "@/components/inputs/Erc20ApproveButton";
+import { SendTxButton } from "@/components/inputs/SendTxButton";
+import { EvmAddress } from "@/utils/evmAddress";
 
-function DepositForm() {
+export function DepositForm() {
     const [value, setValue] = useState(BN_ZERO);
 
     const underlying = useUnderlying();
@@ -85,5 +85,3 @@ function DepositForm() {
         </Box>
     );
 }
-
-export default DepositForm;

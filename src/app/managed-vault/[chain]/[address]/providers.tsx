@@ -13,10 +13,11 @@ import { useCookies } from "react-cookie";
 import { ManagedVaultProvider } from "@/hooks/managed-vault/useManagedVault";
 import { getConfig } from "@/wagmiConfig";
 import { useParams } from "next/navigation";
-import EvmAddress from "@/utils/evmAddress";
+
 import { UnderlyingProvider } from "@/hooks/managed-vault/useUnderlying";
 import { ShareholderProvider } from "@/hooks/managed-vault/useShareholder";
 import { ManagerProvider } from "@/hooks/managed-vault/useManager";
+import { EvmAddress } from "@/utils/evmAddress";
 
 export function Providers(props: {
     children: ReactNode;

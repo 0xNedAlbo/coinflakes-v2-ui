@@ -1,10 +1,10 @@
-import Section from "@/components/common/Section";
+import { Section } from "@/components/common/Section";
 import { useUnderlying } from "@/hooks/v2/useUnderlying";
 import { useVault } from "@/hooks/v2/useVault";
 import { numberFormat } from "@/utils/formats";
 import { Box } from "@mui/material";
 
-export default function CurrentSharePrice() {
+export function CurrentSharePrice() {
     const underlying = useUnderlying();
     const vault = useVault();
 

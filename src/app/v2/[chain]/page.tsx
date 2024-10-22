@@ -1,12 +1,12 @@
 "use client";
 
 import { RequiredChainPrompt } from "@/components/inputs/RequiredChainPrompt";
-import MainAppBar from "@/components/v2/MainAppBar";
-import ShareholderSection from "@/components/v2/ShareholderSection";
-import VaultSummary from "@/components/v2/VaultSummary";
+import { MainAppBar } from "@/components/v2/MainAppBar";
+import { ShareholderSection } from "@/components/v2/ShareholderSection";
+import { VaultSummary } from "@/components/v2/VaultSummary";
 import { CssBaseline } from "@mui/material";
 
-function App() {
+export function App() {
     return (
         <>
             <CssBaseline />
@@ -17,5 +17,4 @@ function App() {
         </>
     );
 }
-
 export default App;

@@ -1,4 +1,3 @@
-import EvmAddress from "@/utils/evmAddress";
 import {
     createContext,
     ReactNode,
@@ -11,6 +10,7 @@ import { useUnderlying } from "./useUnderlying";
 import { useReadManagedVaultManager } from "@/generated/wagmi";
 import { useAccount, useReadContract, useWatchContractEvent } from "wagmi";
 import { erc20Abi } from "viem";
+import { EvmAddress } from "@/utils/evmAddress";
 
 export type Manager = {
     address?: EvmAddress;

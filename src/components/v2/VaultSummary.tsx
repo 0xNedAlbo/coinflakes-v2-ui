@@ -1,16 +1,16 @@
 import { Grid } from "@mui/material";
-import CurrentSharePrice from "./VaultSummary/CurrentSharePrice";
-import ShareholderAssets from "./VaultSummary/ShareholderAssets";
-import ShareholderShares from "./VaultSummary/ShareholderShares";
+import { CurrentSharePrice } from "./VaultSummary/CurrentSharePrice";
+import { ShareholderShares } from "./VaultSummary/ShareholderShares";
+import { YourAssets } from "./VaultSummary/ShareholderAssets";
 
-export default function VaultSummary() {
+export function VaultSummary() {
     return (
         <Grid container mt={"4em"}>
             <Grid item xs={2}></Grid>
             <Grid item xs={8}>
                 <Grid container spacing={5}>
                     <Grid item xs={4}>
-                        <ShareholderAssets></ShareholderAssets>
+                        <YourAssets></YourAssets>
                     </Grid>
                     <Grid item xs={4}>
                         <CurrentSharePrice></CurrentSharePrice>

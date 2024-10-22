@@ -6,8 +6,6 @@ import {
     useState,
 } from "react";
 
-import EvmAddress from "@/utils/evmAddress";
-
 import {
     useReadVaultDecimals,
     useReadVaultName,
@@ -16,6 +14,7 @@ import {
     useReadVaultTotalAssets,
     vaultAddress,
 } from "@/generated/wagmi";
+import { EvmAddress } from "@/utils/evmAddress";
 
 export type Vault = {
     address: EvmAddress;

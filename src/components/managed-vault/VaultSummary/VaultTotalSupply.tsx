@@ -1,8 +1,8 @@
-import Section from "@/components/common/Section";
+import { Section } from "@/components/common/Section";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 import { numberFormat } from "@/utils/formats";
 
-export default function VaultTotalSupply() {
+export function VaultTotalSupply() {
     const vault = useManagedVault();
     return (
         <Section heading="Total Shares">

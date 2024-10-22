@@ -1,12 +1,10 @@
-import DepositForm from "./DepositForm";
-import Section from "../../common/Section";
+import { Section } from "@/components/common/Section";
+import { DepositForm } from "./DepositForm";
 
-function BuyShares() {
+export function BuyShares() {
     return (
         <Section heading="Buy Shares" headingAlign="center">
             <DepositForm></DepositForm>
         </Section>
     );
 }
-
-export default BuyShares;

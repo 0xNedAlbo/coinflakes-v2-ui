@@ -1,11 +1,11 @@
 import { Grid } from "@mui/material";
-import ShareholderManagement from "./ManagerSection/ShareholderManagement";
-import WithdrawAssets from "./ManagerSection/WithdrawAssets";
-import ReturnAssets from "./ManagerSection/ReturnAssets";
-import SharePriceManagement from "./ManagerSection/SharePriceManagement";
 import { useManager } from "@/hooks/managed-vault/useManager";
+import { ReturnAssets } from "./ManagerSection/ReturnAssets";
+import { ShareholderManagement } from "./ManagerSection/ShareholderManagement";
+import { SharePriceManagement } from "./ManagerSection/SharePriceManagement";
+import { WithdrawAssets } from "./ManagerSection/WithdrawAssets";
 
-export default function ManagerSection() {
+export function ManagerSection() {
     const manager = useManager();
     const isManager = manager?.isAccount;
 

@@ -1,13 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import EvmAddress from "@/utils/evmAddress";
-
 import {
     managedVaultAbi,
     useReadManagedVaultConvertToAssets,
 } from "@/generated/wagmi";
 import { BN_1E } from "@/utils/constants";
 import { useReadContracts, useWatchContractEvent } from "wagmi";
+import { EvmAddress } from "@/utils/evmAddress";
 
 export type ManagedVault = {
     address: EvmAddress;

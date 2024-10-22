@@ -1,9 +1,8 @@
 import { Grid } from "@mui/material";
+import { BuyShares } from "./ShareholderSection/BuyShares";
+import { SellShares } from "./ShareholderSection/SellShares";
 
-import BuyShares from "./ShareholderSection/BuyShares";
-import SellShares from "./ShareholderSection/SellShares";
-
-function ShareholderSection() {
+export function ShareholderSection() {
     return (
         <Grid container mt={"4em"} mb={"4em"}>
             <Grid item xs={2}></Grid>
@@ -20,5 +19,3 @@ function ShareholderSection() {
         </Grid>
     );
 }
-
-export default ShareholderSection;

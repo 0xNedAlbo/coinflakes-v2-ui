@@ -1,4 +1,3 @@
-import EvmAddress from "@/utils/evmAddress";
 import {
     createContext,
     ReactNode,
@@ -14,12 +13,11 @@ import {
     useReadManagedVaultIsShareholder,
     useReadManagedVaultManager,
     useReadManagedVaultMaxRedeem,
-    useWatchManagedVaultDepositEvent,
     useWatchManagedVaultEvent,
-    useWatchManagedVaultWithdrawEvent,
 } from "@/generated/wagmi";
 import { useAccount, useReadContract, useWatchContractEvent } from "wagmi";
 import { erc20Abi } from "viem";
+import { EvmAddress } from "@/utils/evmAddress";
 
 export type Shareholder = {
     address: EvmAddress;

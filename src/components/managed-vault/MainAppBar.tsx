@@ -4,10 +4,10 @@ import { useContext } from "react";
 import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
 
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
-import SwitchChainMenu from "../inputs/SwitchChainMenu";
 import { ColorModeContext } from "@/components/common/ColorModeContext";
+import { SwitchChainMenu } from "../inputs/SwitchChainMenu";
 
-export default function MainAppBar() {
+export function MainAppBar() {
     const vault = useManagedVault();
 
     const { mode, toggleColorMode } = useContext(ColorModeContext);

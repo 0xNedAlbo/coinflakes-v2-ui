@@ -1,9 +1,9 @@
 import { Button, Menu, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Chain } from "viem";
-import { useChainId, useChains, useSwitchChain } from "wagmi";
+import { useChainId, useSwitchChain } from "wagmi";
 
-export default function SwitchChainMenu() {
+export function SwitchChainMenu() {
     const currentChainId = useChainId();
     const { chains, switchChain } = useSwitchChain();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

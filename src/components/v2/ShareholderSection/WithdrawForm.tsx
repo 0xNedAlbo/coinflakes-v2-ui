@@ -1,16 +1,16 @@
 import { Box, Grid } from "@mui/material";
 import { useState } from "react";
-import { useAccount, useReadContract, useWatchContractEvent } from "wagmi";
+import { useAccount } from "wagmi";
 import { BN_ZERO } from "@/utils/constants";
 import { numberFormat } from "@/utils/formats";
 import { useVault } from "@/hooks/v2/useVault";
-import AssetAmountTextField from "@/components/inputs/AssetAmountTextField";
-import SendTxButton from "@/components/inputs/SendTxButton";
 import { useUnderlying } from "@/hooks/v2/useUnderlying";
 import { erc4626Abi } from "viem";
 import { useShareholder } from "@/hooks/v2/useShareholder";
+import { AssetAmountTextField } from "@/components/inputs/AssetAmountTextField";
+import { SendTxButton } from "@/components/inputs/SendTxButton";
 
-function WithdrawForm() {
+export function WithdrawForm() {
     const [value, setValue] = useState(BN_ZERO);
 
     const account = useAccount();
@@ -71,5 +71,3 @@ function WithdrawForm() {
         </Box>
     );
 }
-
-export default WithdrawForm;

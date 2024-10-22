@@ -1,6 +1,6 @@
 import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
 import { useMemo, useState } from "react";
-import { getAddress, isAddress } from "viem";
+import { getAddress } from "viem";
 
 export type AddressTextFieldProps = {
     label: string;
@@ -10,7 +10,7 @@ export type AddressTextFieldProps = {
     onValueChange?: (newValue: string | null) => void;
 };
 
-function AddressTextField(props: AddressTextFieldProps) {
+export function AddressTextField(props: AddressTextFieldProps) {
     const [value, setValue] = useState<string>(props.defaultValue ?? "");
 
     const id = useMemo(() => {
@@ -47,5 +47,3 @@ function AddressTextField(props: AddressTextFieldProps) {
         </FormControl>
     );
 }
-
-export default AddressTextField;

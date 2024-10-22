@@ -1,17 +1,17 @@
-import Section from "@/components/common/Section";
-import AssetAmountTextField from "@/components/inputs/AssetAmountTextField";
-import Erc20ApproveButton from "@/components/inputs/Erc20ApproveButton";
-import SendTxButton from "@/components/inputs/SendTxButton";
+import { Section } from "@/components/common/Section";
+import { AssetAmountTextField } from "@/components/inputs/AssetAmountTextField";
+import { Erc20ApproveButton } from "@/components/inputs/Erc20ApproveButton";
+import { SendTxButton } from "@/components/inputs/SendTxButton";
 import { managedVaultAbi } from "@/generated/wagmi";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 import { useShareholder } from "@/hooks/managed-vault/useShareholder";
 import { useUnderlying } from "@/hooks/managed-vault/useUnderlying";
-import EvmAddress from "@/utils/evmAddress";
+import { EvmAddress } from "@/utils/evmAddress";
 import { numberFormat } from "@/utils/formats";
 import { Box, Grid } from "@mui/material";
 import { useCallback, useState } from "react";
 
-function ReturnAssets() {
+export function ReturnAssets() {
     const vault = useManagedVault();
     const underlying = useUnderlying();
     const shareholder = useShareholder();
@@ -92,5 +92,3 @@ function ReturnAssets() {
         </Section>
     );
 }
-
-export default ReturnAssets;

@@ -19,7 +19,7 @@ export type AssetAmountTextFieldProps = {
     onChange?: (newValue: any | null) => void;
 };
 
-function AssetAmountTextField({
+export function AssetAmountTextField({
     decimals,
     defaultValue,
     disabled,
@@ -83,8 +83,6 @@ function AssetAmountTextField({
         </FormControl>
     );
 }
-
-export default AssetAmountTextField;
 
 function formatValue(value?: any | null, decimals?: number): string {
     return formatUnits(value ?? "0", decimals ?? 18);

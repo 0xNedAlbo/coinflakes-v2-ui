@@ -6,7 +6,6 @@ import {
     useState,
 } from "react";
 
-import EvmAddress from "@/utils/evmAddress";
 import { useAccount, useReadContract } from "wagmi";
 import {
     useReadDaiAllowance,
@@ -14,11 +13,11 @@ import {
     useReadVaultMaxWithdraw,
     useWatchDaiApprovalEvent,
     useWatchDaiTransferEvent,
-    useWatchVaultDepositEvent,
     useWatchVaultTransferEvent,
     vaultAbi,
     vaultAddress,
 } from "@/generated/wagmi";
+import { EvmAddress } from "@/utils/evmAddress";
 
 export type Shareholder = {
     address: EvmAddress;

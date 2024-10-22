@@ -1,11 +1,11 @@
-import AssetAmountTextField from "@/components/inputs/AssetAmountTextField";
-import SendTxButton from "@/components/inputs/SendTxButton";
+import { AssetAmountTextField } from "@/components/inputs/AssetAmountTextField";
+import { SendTxButton } from "@/components/inputs/SendTxButton";
 import { managedVaultAbi } from "@/generated/wagmi";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 import { useShareholder } from "@/hooks/managed-vault/useShareholder";
 import { useUnderlying } from "@/hooks/managed-vault/useUnderlying";
 import { BN_1E } from "@/utils/constants";
-import EvmAddress from "@/utils/evmAddress";
+import { EvmAddress } from "@/utils/evmAddress";
 import { numberFormat } from "@/utils/formats";
 import { SwapHorizOutlined } from "@mui/icons-material";
 import { Box, Button, Grid, Typography } from "@mui/material";
@@ -13,7 +13,7 @@ import { useCallback, useState } from "react";
 
 export type DepositFormProps = {};
 
-function RedeemForm({}: DepositFormProps) {
+export function RedeemForm({}: DepositFormProps) {
     const vault = useManagedVault();
     const underlying = useUnderlying();
     const shareholder = useShareholder();
@@ -95,5 +95,3 @@ function RedeemForm({}: DepositFormProps) {
         </Box>
     );
 }
-
-export default RedeemForm;

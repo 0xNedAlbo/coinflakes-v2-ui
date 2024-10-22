@@ -1,11 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import EvmAddress from "@/utils/evmAddress";
-
 import { useReadManagedVaultAsset } from "@/generated/wagmi";
 import { erc20Abi } from "viem";
 import { useManagedVault } from "./useManagedVault";
 import { useReadContract } from "wagmi";
+import { EvmAddress } from "@/utils/evmAddress";
 
 export type Underlying = {
     address: EvmAddress;

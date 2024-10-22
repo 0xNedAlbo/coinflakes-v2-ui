@@ -1,12 +1,12 @@
 import { Grid } from "@mui/material";
-import CurrentSharePrice from "./VaultSummary/CurrentSharePrice";
-import YourAssets from "./VaultSummary/YourAssets";
-import AssetsUnderManagement from "./VaultSummary/AssetsUnderManagement";
-import VaultTotalSupply from "./VaultSummary/VaultTotalSupply";
-import YourShares from "./VaultSummary/YourShares";
 import { useShareholder } from "@/hooks/managed-vault/useShareholder";
+import { AssetsUnderManagement } from "./VaultSummary/AssetsUnderManagement";
+import { CurrentSharePrice } from "./VaultSummary/CurrentSharePrice";
+import { VaultTotalSupply } from "./VaultSummary/VaultTotalSupply";
+import { YourAssets } from "./VaultSummary/YourAssets";
+import { YourShares } from "./VaultSummary/YourShares";
 
-export default function VaultSummary() {
+export function VaultSummary() {
     const shareholder = useShareholder();
     return (
         <Grid container mt={"4em"}>

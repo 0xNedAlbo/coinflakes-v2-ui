@@ -5,7 +5,7 @@ import { ConnectKitButton } from "connectkit";
 import { useContext } from "react";
 import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
 
-export default function MainAppBar() {
+export function MainAppBar() {
     const vault = useVault();
     const { mode, toggleColorMode } = useContext(ColorModeContext);
     function changeColorMode() {

@@ -27,7 +27,7 @@ export type TransactionDialogProps = {
     onError?: () => void;
 };
 
-export default function TransactionDialog(
+export function TransactionDialog(
     props: React.PropsWithChildren<TransactionDialogProps>
 ) {
     const txHash = props.txHash;

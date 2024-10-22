@@ -1,16 +1,11 @@
 import { CheckOutlined, ErrorOutlined } from "@mui/icons-material";
 import { Button, CircularProgress } from "@mui/material";
 import { erc20Abi } from "viem";
-import { useCallback, useEffect, useState } from "react";
-import {
-    useReadContract,
-    useWaitForTransactionReceipt,
-    useWatchContractEvent,
-    useWriteContract,
-} from "wagmi";
+import { useCallback, useEffect } from "react";
+import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { BN_ZERO } from "@/utils/constants";
-import EvmAddress from "@/utils/evmAddress";
-import TransactionDialog from "../common/TransactionDialog";
+import { TransactionDialog } from "../common/TransactionDialog";
+import { EvmAddress } from "@/utils/evmAddress";
 
 export type Erc20ApproveButtonProps = {
     allowance: bigint;
@@ -27,7 +22,7 @@ export type Erc20ApproveButtonRef = {
     reset: () => void;
 };
 
-function Erc20ApproveButton({
+export function Erc20ApproveButton({
     allowance,
     label,
     disabled,
@@ -141,7 +136,3 @@ function Erc20ApproveButton({
             </>
         );
 }
-
-Erc20ApproveButton.displayName = "Erc20ApproveButton";
-
-export default Erc20ApproveButton;

@@ -1,6 +1,6 @@
-import Section from "@/components/common/Section";
-import AddressTextField from "@/components/inputs/AddressTextField";
-import SendTxButton from "@/components/inputs/SendTxButton";
+import { Section } from "@/components/common/Section";
+import { AddressTextField } from "@/components/inputs/AddressTextField";
+import { SendTxButton } from "@/components/inputs/SendTxButton";
 import {
     managedVaultAbi,
     useReadManagedVaultIsShareholder,
@@ -9,7 +9,7 @@ import {
 } from "@/generated/wagmi";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 import { useShareholder } from "@/hooks/managed-vault/useShareholder";
-import EvmAddress from "@/utils/evmAddress";
+import { EvmAddress } from "@/utils/evmAddress";
 import {
     AddOutlined,
     CheckOutlined,
@@ -18,7 +18,7 @@ import {
 import { Box, Grid, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 
-function ShareholderManagement() {
+export function ShareholderManagement() {
     const vault = useManagedVault();
     const [address, setAddress] = useState<string | null>(null);
 
@@ -111,5 +111,3 @@ function ShareholderManagement() {
         </Section>
     );
 }
-
-export default ShareholderManagement;

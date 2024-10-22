@@ -1,16 +1,16 @@
-import Section from "@/components/common/Section";
-import AssetAmountTextField from "@/components/inputs/AssetAmountTextField";
-import SendTxButton from "@/components/inputs/SendTxButton";
+import { Section } from "@/components/common/Section";
+import { AssetAmountTextField } from "@/components/inputs/AssetAmountTextField";
+import { SendTxButton } from "@/components/inputs/SendTxButton";
 import { managedVaultAbi } from "@/generated/wagmi";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 import { useManager } from "@/hooks/managed-vault/useManager";
 import { useUnderlying } from "@/hooks/managed-vault/useUnderlying";
-import EvmAddress from "@/utils/evmAddress";
+import { EvmAddress } from "@/utils/evmAddress";
 import { numberFormat } from "@/utils/formats";
 import { Box, Grid } from "@mui/material";
 import { useCallback, useState } from "react";
 
-function WithdrawAssets() {
+export function WithdrawAssets() {
     const vault = useManagedVault();
     const underlying = useUnderlying();
     const manager = useManager();
@@ -78,5 +78,3 @@ function WithdrawAssets() {
         </Section>
     );
 }
-
-export default WithdrawAssets;

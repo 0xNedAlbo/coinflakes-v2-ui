@@ -1,11 +1,11 @@
-import Section from "@/components/common/Section";
-import AssetAmountTextField from "@/components/inputs/AssetAmountTextField";
-import SendTxButton from "@/components/inputs/SendTxButton";
+import { Section } from "@/components/common/Section";
+import { AssetAmountTextField } from "@/components/inputs/AssetAmountTextField";
+import { SendTxButton } from "@/components/inputs/SendTxButton";
 import { managedVaultAbi } from "@/generated/wagmi";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 import { useUnderlying } from "@/hooks/managed-vault/useUnderlying";
 import { BN_1E } from "@/utils/constants";
-import EvmAddress from "@/utils/evmAddress";
+import { EvmAddress } from "@/utils/evmAddress";
 import { numberFormat } from "@/utils/formats";
 import { CalculateOutlined } from "@mui/icons-material";
 import {
@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 
-function SharePriceManagement() {
+export function SharePriceManagement() {
     const vault = useManagedVault();
     const underlying = useUnderlying();
     const [assets, setAssets] = useState<bigint | null>(null);
@@ -212,5 +212,3 @@ function SharePriceManagement() {
         </Section>
     );
 }
-
-export default SharePriceManagement;

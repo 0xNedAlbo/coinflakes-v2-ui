@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { useAccount } from "wagmi";
-import Section from "@/components/common/Section";
 import { useShareholder } from "@/hooks/v2/useShareholder";
 import { useVault } from "@/hooks/v2/useVault";
 import { BN_1E } from "@/utils/constants";
 import { numberFormat } from "@/utils/formats";
+import { Section } from "@/components/common/Section";
 
-export default function ShareholderShares() {
+export function ShareholderShares() {
     const [percentage, setPercentage] = useState(0n);
 
     const account = useAccount();

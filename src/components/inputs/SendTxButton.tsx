@@ -3,8 +3,8 @@ import { Button, CircularProgress } from "@mui/material";
 import React, { ReactElement, useEffect, useState } from "react";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { Abi } from "viem";
-import EvmAddress from "@/utils/evmAddress";
-import TransactionDialog from "../common/TransactionDialog";
+import { TransactionDialog } from "../common/TransactionDialog";
+import { EvmAddress } from "@/utils/evmAddress";
 
 export type SendTxButtonProps = {
     disabled?: boolean;
@@ -89,7 +89,3 @@ export function SendTxButton(
         </>
     );
 }
-
-SendTxButton.displayName = "SendTxButton";
-
-export default SendTxButton;

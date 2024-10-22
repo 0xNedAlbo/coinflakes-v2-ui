@@ -1,4 +1,4 @@
-import Section from "@/components/common/Section";
+import { Section } from "@/components/common/Section";
 import { useShareholder } from "@/hooks/v2/useShareholder";
 import { useUnderlying } from "@/hooks/v2/useUnderlying";
 import { useVault } from "@/hooks/v2/useVault";
@@ -7,7 +7,7 @@ import { numberFormat } from "@/utils/formats";
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 
-export default function YourAssets() {
+export function YourAssets() {
     //const [shares, setShares] = useState(0n);
     const [sharesValue, setSharesValue] = useState(0n);
 

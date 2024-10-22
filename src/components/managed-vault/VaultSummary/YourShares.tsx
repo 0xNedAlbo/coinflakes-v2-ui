@@ -1,4 +1,4 @@
-import Section from "@/components/common/Section";
+import { Section } from "@/components/common/Section";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 import { useShareholder } from "@/hooks/managed-vault/useShareholder";
 import { BN_1E } from "@/utils/constants";
@@ -6,7 +6,7 @@ import { numberFormat } from "@/utils/formats";
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 
-function YourShares() {
+export function YourShares() {
     const vault = useManagedVault();
     const shareholder = useShareholder();
 
@@ -49,5 +49,3 @@ function YourShares() {
         </Section>
     );
 }
-
-export default YourShares;

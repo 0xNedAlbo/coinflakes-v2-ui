@@ -1,6 +1,6 @@
-import AssetAmountTextField from "@/components/inputs/AssetAmountTextField";
-import Erc20ApproveButton from "@/components/inputs/Erc20ApproveButton";
-import SendTxButton from "@/components/inputs/SendTxButton";
+import { AssetAmountTextField } from "@/components/inputs/AssetAmountTextField";
+import { Erc20ApproveButton } from "@/components/inputs/Erc20ApproveButton";
+import { SendTxButton } from "@/components/inputs/SendTxButton";
 import { managedVaultAbi } from "@/generated/wagmi";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 import { useShareholder } from "@/hooks/managed-vault/useShareholder";
@@ -13,7 +13,7 @@ import { useCallback, useState } from "react";
 
 export type DepositFormProps = {};
 
-function DepositForm({}: DepositFormProps) {
+export function DepositForm({}: DepositFormProps) {
     const vault = useManagedVault();
     const underlying = useUnderlying();
     const shareholder = useShareholder();
@@ -100,5 +100,3 @@ function DepositForm({}: DepositFormProps) {
         </Box>
     );
 }
-
-export default DepositForm;
