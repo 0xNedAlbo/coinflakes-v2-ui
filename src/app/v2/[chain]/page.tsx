@@ -6,7 +6,7 @@ import { ShareholderSection } from "@/components/v2/ShareholderSection";
 import { VaultSummary } from "@/components/v2/VaultSummary";
 import { CssBaseline } from "@mui/material";
 
-export function App() {
+function App() {
     return (
         <>
             <CssBaseline />

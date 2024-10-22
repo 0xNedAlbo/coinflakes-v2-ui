@@ -6,5 +6,4 @@ function App() {
     redirect("/v2/ethereum");
     return <></>;
 }
-
 export default App;
