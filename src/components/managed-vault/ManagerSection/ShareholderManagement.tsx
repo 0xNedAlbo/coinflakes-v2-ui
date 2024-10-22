@@ -7,8 +7,8 @@ import {
     useWatchManagedVaultAddShareholderEvent,
     useWatchManagedVaultRemoveShareholderEvent,
 } from "@/generated/wagmi";
+import { useAllowList } from "@/hooks/managed-vault/useAllowList";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
-import { useShareholder } from "@/hooks/managed-vault/useShareholder";
 import { EvmAddress } from "@/utils/evmAddress";
 import {
     AddOutlined,
@@ -17,22 +17,29 @@ import {
 } from "@mui/icons-material";
 import { Box, Grid, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
+import { isAddress } from "viem";
 
 export function ShareholderManagement() {
     const vault = useManagedVault();
+    const { isAllowed } = useAllowList();
     const [address, setAddress] = useState<string | null>(null);
+    const [isShareholder, setShareholder] = useState<boolean>(false);
 
-    const account = useShareholder();
-
-    const { data: isShareholder, refetch: refetchIsShareholder } =
+    /* const { data: isShareholder, refetch: refetchIsShareholder } =
         useReadManagedVaultIsShareholder({
             address: vault?.address,
             args: [address as EvmAddress],
         });
+        */
 
     useEffect(() => {
-        refetchIsShareholder();
-    }, [address, refetchIsShareholder]);
+        if (!address) setShareholder(false);
+        else if (!isAddress(address)) setShareholder(false);
+        else
+            isAllowed(address).then((result: boolean) => {
+                setShareholder(result);
+            });
+    }, [address]);
 
     const onValueChange = useCallback(
         (newValue: string | null) => {
@@ -42,7 +49,7 @@ export function ShareholderManagement() {
         [vault]
     );
 
-    useWatchManagedVaultAddShareholderEvent({
+    /* useWatchManagedVaultAddShareholderEvent({
         address: vault?.address,
         onLogs: () => {
             refetchIsShareholder();
@@ -55,6 +62,7 @@ export function ShareholderManagement() {
             refetchIsShareholder();
         },
     });
+    */
 
     return (
         <Section heading="Shareholder Management">
@@ -75,6 +83,7 @@ export function ShareholderManagement() {
                             disabled={!address || !!isShareholder}
                             icon={<AddOutlined />}
                             abi={managedVaultAbi}
+                            onSuccess={() => setShareholder(true)}
                         >
                             Add&nbsp;Shareholder
                         </SendTxButton>
@@ -87,6 +96,7 @@ export function ShareholderManagement() {
                             abi={managedVaultAbi}
                             disabled={!isShareholder}
                             icon={<RemoveOutlined />}
+                            onSuccess={() => setShareholder(false)}
                         >
                             Remove&nbsp;Shareholder
                         </SendTxButton>

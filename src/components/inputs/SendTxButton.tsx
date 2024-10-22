@@ -14,6 +14,7 @@ export type SendTxButtonProps = {
     functionName: string;
     args?: any[];
     value?: bigint;
+    onSuccess?: () => void;
 };
 
 export function SendTxButton(
@@ -56,6 +57,7 @@ export function SendTxButton(
 
     useEffect(() => {
         if (isSuccess) setTimeout(() => resetTx?.(), 5000);
+        if (isSuccess) props.onSuccess?.();
     }, [isSuccess]);
 
     return (
