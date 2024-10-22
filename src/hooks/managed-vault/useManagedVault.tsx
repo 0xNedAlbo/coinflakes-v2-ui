@@ -91,6 +91,7 @@ export function ManagedVaultProvider(props: {
 
     useEffect(() => {
         if (!tokenomics) return;
+
         setTotalAssets(tokenomics[0].result);
         setAssetsInUse(tokenomics[1].result);
         setTotalSupply(tokenomics[2].result);
