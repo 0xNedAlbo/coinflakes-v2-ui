@@ -1,38 +1,29 @@
 import { CHAIN_SLUGS } from "@/utils/constants";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ReactElement, ReactNode, useEffect } from "react";
 import { useAccount, useChains, useSwitchChain } from "wagmi";
 import { Section } from "../common/Section";
 
 export type RequiredChainPromptProps = {
+    requiredChainId: number;
     onChainConnected?: (connected: boolean) => void;
+    heading?: string;
 };
 
 export function RequiredChainPrompt(props: RequiredChainPromptProps) {
-    const [requiredChainId, setRequiredChainId] = useState<number>();
-    const [requiredChainName, setRequiredChainName] = useState<string>();
-
     const { isConnected, chainId } = useAccount();
 
     const chains = useChains();
-    const params = useParams();
-
     const { switchChain } = useSwitchChain();
 
-    useEffect(() => {
-        if (!params?.chain) {
-            setRequiredChainId(undefined);
-            setRequiredChainName(undefined);
-        } else {
-            const _chainId = CHAIN_SLUGS[params?.chain as string];
-            setRequiredChainId(_chainId);
-            setRequiredChainName(
-                chains.find((chain) => chain.id == _chainId)?.name
-            );
-        }
-    }, [chainId, params]);
+    const requiredChainId = props.requiredChainId;
+    const requiredChainName = chains.find(
+        (chain) => chain.id == requiredChainId
+    )?.name;
 
+    const heading =
+        props.heading ?? "You are connected to the wrong network...";
     useEffect(() => {
         if (chainId === undefined || requiredChainId === undefined)
             props.onChainConnected?.(false);
@@ -54,7 +45,7 @@ export function RequiredChainPrompt(props: RequiredChainPromptProps) {
             <Grid container mt={"1em"} marginTop={"3em"}>
                 <Grid item xs={3}></Grid>
                 <Grid item xs={6} textAlign={"center"}>
-                    <Section heading="You are connected to the wrong network...">
+                    <Section heading={heading}>
                         <Box textAlign={"center"}>
                             <Button variant="contained" onClick={switchNetwork}>
                                 Switch to {requiredChainName}

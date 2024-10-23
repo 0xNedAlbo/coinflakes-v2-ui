@@ -15,7 +15,9 @@ function App() {
             <CssBaseline />
             <MainAppBar></MainAppBar>
             <RequiredChainPrompt
+                requiredChainId={1}
                 onChainConnected={setChainConnected}
+                heading="The Coinflakes Investment Vault is on Ethereum!"
             ></RequiredChainPrompt>
             {isChainConnected && (
                 <>

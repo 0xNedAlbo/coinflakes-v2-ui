@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 
 function App() {
-    redirect("/v2/ethereum");
+    redirect("/v2/");
     return <></>;
 }
 export default App;
