@@ -19,6 +19,7 @@ import { ShareholderProvider } from "@/hooks/managed-vault/useShareholder";
 import { ManagerProvider } from "@/hooks/managed-vault/useManager";
 import { EvmAddress } from "@/utils/evmAddress";
 import { ErrorBoundary } from "react-error-boundary";
+import { CHAIN_SLUGS } from "@/utils/constants";
 
 export function Providers(props: {
     children: ReactNode;
@@ -79,6 +80,9 @@ export function Providers(props: {
                             <ErrorBoundary fallbackRender={fallbackRender}>
                                 <ManagedVaultProvider
                                     address={params.address as EvmAddress}
+                                    chainId={
+                                        CHAIN_SLUGS[params.chain as EvmAddress]
+                                    }
                                 >
                                     <UnderlyingProvider>
                                         <ShareholderProvider>

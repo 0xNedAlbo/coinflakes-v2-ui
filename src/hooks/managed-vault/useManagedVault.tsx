@@ -5,7 +5,7 @@ import {
     useReadManagedVaultConvertToAssets,
 } from "@/generated/wagmi";
 import { BN_1E } from "@/utils/constants";
-import { useReadContracts, useWatchContractEvent } from "wagmi";
+import { useAccount, useReadContracts, useWatchContractEvent } from "wagmi";
 import { EvmAddress } from "@/utils/evmAddress";
 
 export type ManagedVault = {
@@ -31,6 +31,7 @@ export function useManagedVault() {
 
 export function ManagedVaultProvider(props: {
     children: React.ReactNode;
+    chainId: number;
     address: EvmAddress;
 }): React.ReactNode {
     const [vault, setVault] = useState<UseManagedVaultReturnType>();
@@ -41,6 +42,8 @@ export function ManagedVaultProvider(props: {
     const [totalAssets, setTotalAssets] = useState<bigint>();
     const [assetsInUse, setAssetsInUse] = useState<bigint>();
     const [totalSupply, setTotalSupply] = useState<bigint>();
+
+    const { chainId } = useAccount();
 
     const managedVaultContext = {
         address: props.address,
@@ -75,7 +78,8 @@ export function ManagedVaultProvider(props: {
     useEffect(() => {
         if (!contractData) return;
         if (contractData[0].status == "failure") {
-            throw new Error("Invalid vault address: " + props.address);
+            if (props.chainId && chainId == props.chainId)
+                throw new Error("Invalid vault address: " + props.address);
         }
         setName(contractData[0].result);
         setSymbol(contractData[1].result);
