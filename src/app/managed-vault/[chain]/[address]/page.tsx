@@ -10,6 +10,7 @@ import { CHAIN_SLUGS } from "@/utils/constants";
 import { CssBaseline } from "@mui/material";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { useAccount } from "wagmi";
 
 function App() {

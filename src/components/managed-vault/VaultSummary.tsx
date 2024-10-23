@@ -5,10 +5,12 @@ import { CurrentSharePrice } from "./VaultSummary/CurrentSharePrice";
 import { VaultTotalSupply } from "./VaultSummary/VaultTotalSupply";
 import { YourAssets } from "./VaultSummary/YourAssets";
 import { YourShares } from "./VaultSummary/YourShares";
+import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 
 export function VaultSummary() {
     const shareholder = useShareholder();
-    return (
+    const vault = useManagedVault();
+    return vault ? (
         <Grid container mt={"4em"}>
             <Grid item xs={2}></Grid>
             <Grid item xs={8}>
@@ -34,5 +36,7 @@ export function VaultSummary() {
                 <Grid item xs={2}></Grid>
             </Grid>
         </Grid>
+    ) : (
+        <></>
     );
 }

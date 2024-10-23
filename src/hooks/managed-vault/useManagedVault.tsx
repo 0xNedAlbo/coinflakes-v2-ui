@@ -74,6 +74,9 @@ export function ManagedVaultProvider(props: {
 
     useEffect(() => {
         if (!contractData) return;
+        if (contractData[0].status == "failure") {
+            throw new Error("Invalid vault address: " + props.address);
+        }
         setName(contractData[0].result);
         setSymbol(contractData[1].result);
         setDecimals(contractData[2].result);
@@ -137,9 +140,9 @@ export function ManagedVaultProvider(props: {
             typeof assetsInUse === "undefined" ||
             typeof totalSupply === "undefined" ||
             typeof sharePrice === "undefined"
-        )
+        ) {
             setVault(undefined);
-        else {
+        } else {
             setVault({
                 address: props.address,
                 name,

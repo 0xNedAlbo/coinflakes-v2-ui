@@ -12,7 +12,12 @@
             "runtimeArgs": [
                 "--profile-directory=Web3DebugProfile",
             ],
-            "url": "http://localhost:3000/"
+            "url": "http://localhost:3000/",
+            "sourceMaps": true,
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            ]
         }
     ]
 }

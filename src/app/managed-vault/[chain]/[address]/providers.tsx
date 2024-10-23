@@ -6,7 +6,7 @@ import { type State, WagmiProvider } from "wagmi";
 import { ConnectKitProvider } from "connectkit";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { PaletteMode } from "@mui/material";
+import { Grid, PaletteMode, Typography } from "@mui/material";
 import { ColorModeContext } from "@/components/common/ColorModeContext";
 
 import { useCookies } from "react-cookie";
@@ -18,6 +18,7 @@ import { UnderlyingProvider } from "@/hooks/managed-vault/useUnderlying";
 import { ShareholderProvider } from "@/hooks/managed-vault/useShareholder";
 import { ManagerProvider } from "@/hooks/managed-vault/useManager";
 import { EvmAddress } from "@/utils/evmAddress";
+import { ErrorBoundary } from "react-error-boundary";
 
 export function Providers(props: {
     children: ReactNode;
@@ -53,6 +54,20 @@ export function Providers(props: {
 
     const initialState = props.initialState;
 
+    function fallbackRender({ error }: { error: any }): ReactNode {
+        return (
+            <Grid container marginTop={"6em"}>
+                <Grid item xs={2}></Grid>
+                <Grid item xs={8} textAlign={"center"}>
+                    <Typography variant="h5" color={"inherit"}>
+                        Error: {error?.message}
+                    </Typography>
+                </Grid>
+                <Grid item xs={2}></Grid>
+            </Grid>
+        );
+    }
+
     return (
         <ColorModeContext.Provider value={{ mode, toggleColorMode }}>
             <ThemeProvider theme={theme}>
@@ -61,17 +76,19 @@ export function Providers(props: {
                         <ConnectKitProvider
                             theme={mode == "light" ? "soft" : "midnight"}
                         >
-                            <ManagedVaultProvider
-                                address={params.address as EvmAddress}
-                            >
-                                <UnderlyingProvider>
-                                    <ShareholderProvider>
-                                        <ManagerProvider>
-                                            {props.children}
-                                        </ManagerProvider>
-                                    </ShareholderProvider>
-                                </UnderlyingProvider>
-                            </ManagedVaultProvider>
+                            <ErrorBoundary fallbackRender={fallbackRender}>
+                                <ManagedVaultProvider
+                                    address={params.address as EvmAddress}
+                                >
+                                    <UnderlyingProvider>
+                                        <ShareholderProvider>
+                                            <ManagerProvider>
+                                                {props.children}
+                                            </ManagerProvider>
+                                        </ShareholderProvider>
+                                    </UnderlyingProvider>
+                                </ManagedVaultProvider>
+                            </ErrorBoundary>
                         </ConnectKitProvider>
                     </QueryClientProvider>
                 </WagmiProvider>

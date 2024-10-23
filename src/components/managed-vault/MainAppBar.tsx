@@ -1,5 +1,4 @@
 import { Grid, IconButton, Typography } from "@mui/material";
-import { ConnectKitButton } from "connectkit";
 import { useContext } from "react";
 import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
 
