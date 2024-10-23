@@ -7,17 +7,28 @@ import { ManagerSection } from "@/components/managed-vault/ManagerSection";
 import { ShareholderSection } from "@/components/managed-vault/ShareholderSection";
 import { VaultSummary } from "@/components/managed-vault/VaultSummary";
 import { CssBaseline } from "@mui/material";
+import { useParams } from "next/navigation";
+import { useState } from "react";
+import { useAccount } from "wagmi";
 
 function App() {
+    const [isChainConnected, setChainConnected] = useState<boolean>(false);
+
     return (
         <>
             <DocumentTitle />
             <CssBaseline />
             <MainAppBar></MainAppBar>
-            <RequiredChainPrompt></RequiredChainPrompt>
-            <VaultSummary></VaultSummary>
-            <ManagerSection></ManagerSection>
-            <ShareholderSection></ShareholderSection>
+            <RequiredChainPrompt
+                onChainConnected={setChainConnected}
+            ></RequiredChainPrompt>
+            {isChainConnected && (
+                <>
+                    <VaultSummary></VaultSummary>
+                    <ManagerSection></ManagerSection>
+                    <ShareholderSection></ShareholderSection>
+                </>
+            )}
         </>
     );
 }

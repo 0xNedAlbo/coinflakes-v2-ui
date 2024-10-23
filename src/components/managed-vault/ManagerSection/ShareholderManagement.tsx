@@ -1,12 +1,7 @@
 import { Section } from "@/components/common/Section";
 import { AddressTextField } from "@/components/inputs/AddressTextField";
 import { SendTxButton } from "@/components/inputs/SendTxButton";
-import {
-    managedVaultAbi,
-    useReadManagedVaultIsShareholder,
-    useWatchManagedVaultAddShareholderEvent,
-    useWatchManagedVaultRemoveShareholderEvent,
-} from "@/generated/wagmi";
+import { managedVaultAbi } from "@/generated/wagmi";
 import { useAllowList } from "@/hooks/managed-vault/useAllowList";
 import { useManagedVault } from "@/hooks/managed-vault/useManagedVault";
 import { EvmAddress } from "@/utils/evmAddress";
@@ -25,13 +20,6 @@ export function ShareholderManagement() {
     const [address, setAddress] = useState<string | null>(null);
     const [isShareholder, setShareholder] = useState<boolean>(false);
 
-    /* const { data: isShareholder, refetch: refetchIsShareholder } =
-        useReadManagedVaultIsShareholder({
-            address: vault?.address,
-            args: [address as EvmAddress],
-        });
-        */
-
     useEffect(() => {
         if (!address) setShareholder(false);
         else if (!isAddress(address)) setShareholder(false);
@@ -48,21 +36,6 @@ export function ShareholderManagement() {
         },
         [vault]
     );
-
-    /* useWatchManagedVaultAddShareholderEvent({
-        address: vault?.address,
-        onLogs: () => {
-            refetchIsShareholder();
-        },
-    });
-
-    useWatchManagedVaultRemoveShareholderEvent({
-        address: vault?.address,
-        onLogs: () => {
-            refetchIsShareholder();
-        },
-    });
-    */
 
     return (
         <Section heading="Shareholder Management">

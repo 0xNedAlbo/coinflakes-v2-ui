@@ -49,13 +49,6 @@ export function Providers(props: {
         [mode]
     );
 
-    if (props.initialState) {
-        if (params.chain === "ethereum") props.initialState.chainId = 1;
-        else if (params.chain === "localhost")
-            props.initialState.chainId = 1337;
-        else throw new Error("Invalid chain: " + params.chain);
-    }
-
     return (
         <ColorModeContext.Provider value={{ mode, toggleColorMode }}>
             <ThemeProvider theme={theme}>

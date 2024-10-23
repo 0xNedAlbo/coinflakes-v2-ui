@@ -52,12 +52,7 @@ export function Providers(props: {
     );
 
     const initialState = props.initialState;
-    if (initialState) {
-        if (params.chain === "ethereum") initialState.chainId = 1;
-        else if (params.chain === "arbitrum") initialState.chainId = 42161;
-        else if (params.chain === "localhost") initialState.chainId = 1337;
-        else throw new Error("Unsupported chain: " + params.chain);
-    }
+
     return (
         <ColorModeContext.Provider value={{ mode, toggleColorMode }}>
             <ThemeProvider theme={theme}>
