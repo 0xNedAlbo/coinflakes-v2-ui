@@ -78,6 +78,7 @@ export function ManagedVaultProvider(props: {
     useEffect(() => {
         if (!contractData) return;
         if (contractData[0].status == "failure") {
+            // This error is only relevant, if we are on the correct chain.
             if (props.chainId && chainId == props.chainId)
                 throw new Error("Invalid vault address: " + props.address);
         }
