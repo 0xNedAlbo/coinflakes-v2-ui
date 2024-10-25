@@ -2,6 +2,7 @@
 
 import { RequiredChainPrompt } from "@/components/inputs/RequiredChainPrompt";
 import { MainAppBar } from "@/components/v2/MainAppBar";
+import { NavigationMenu } from "@/components/v2/NavigationMenu";
 import { ShareholderSection } from "@/components/v2/ShareholderSection";
 import { VaultSummary } from "@/components/v2/VaultSummary";
 import { CssBaseline } from "@mui/material";
@@ -13,6 +14,7 @@ function App() {
     return (
         <>
             <CssBaseline />
+            <NavigationMenu></NavigationMenu>
             <MainAppBar></MainAppBar>
             <RequiredChainPrompt
                 requiredChainId={1}

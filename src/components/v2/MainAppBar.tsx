@@ -13,24 +13,12 @@ export function MainAppBar() {
         toggleColorMode();
     }
     return (
-        <Grid container mt={"1em"} marginTop={"4em"}>
+        <Grid container mt={"1em"} marginTop={"3em"}>
             <Grid item xs={2}></Grid>
             <Grid item xs={4}>
                 <Typography variant="h4">{vault?.name}</Typography>
             </Grid>
-            <Grid item xs={4} textAlign={"right"}>
-                <IconButton
-                    onClick={changeColorMode}
-                    style={{ marginLeft: "0.2em", marginRight: "0.6em" }}
-                >
-                    {mode == "dark" ? (
-                        <LightModeOutlined></LightModeOutlined>
-                    ) : (
-                        <DarkModeOutlined></DarkModeOutlined>
-                    )}
-                </IconButton>
-                <ConnectButton></ConnectButton>
-            </Grid>
+            <Grid item xs={4} textAlign={"right"}></Grid>
             <Grid item xs={2}></Grid>
         </Grid>
     );
